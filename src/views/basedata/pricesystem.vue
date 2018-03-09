@@ -239,6 +239,8 @@
       changepage() {},
       addPrice(){
         this.add_price=true;
+        this.addPricename = ""
+        this.addFactor = ""
       },
       closeAddModal(){
         this.add_price=false;

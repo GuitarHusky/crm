@@ -86,7 +86,7 @@
 				<Row style='margin: 10px 0;'>
 					<Col span="3" style="text-align:center;"><span style="color:red;">*</span>分类</Col>
 					<Col span="9" style="text-align:center;">
-					<Select v-model="addsupplierobj.addsuppliercategoryid" @on-change="getOption1" disabled>
+					<Select v-model="addsupplierobj.addsuppliercategoryid">
 						<Option v-for="(item,index) in supplierlist" :value="item.value" :key="item.value">{{ item.label }}</Option>
 					</Select>
 					</Col>
@@ -344,17 +344,19 @@
 	import { getAllSupplier, addSupplier, getSupplierCategoryList, deleteSupplier } from '../../../api/api'
 	export default {
     mounted() {
+      /*获取供应商列表数据*/
       this.getAllSupplierinfo()
+      /*获取供应商分类数据*/
       this.getcategoryname()
+      /*获取用户编号*/
       this.$store.state.ticket = sessionStorage.getItem("ticket")
     },
 		methods: {
+      /*获取下拉菜单当前供应商分类*/
 			getOption1(value) {
 				this.selectValue1 = value
 			},
-			getOption2(value) {
-				this.selectValue2 = value
-			},
+      /*获取供应商列表*/
 			getAllSupplierinfo() {
 				this.suppliername = this.$route.params.name
 				getAllSupplier({
@@ -363,7 +365,7 @@
 					limit: this.pageSize,
 					page: 1
 				}).then(res => {
-					console.log(res)
+					/*console.log(res)*/
 					this.supplierlists = res.data
 					if(this.supplierlists == undefined) {
 						this.dataCount = 0
@@ -376,7 +378,7 @@
 					})
 				})
 			},
-			changepage() {
+			changepage(index) {
 				this.suppliername = this.$route.params.name
 				getAllSupplier({
 					ticket: this.$store.state.ticket,
@@ -403,6 +405,7 @@
 					})
 				})
 			},
+      /*供应商列表数据查询*/
 			searchSupplierlist() {
 				this.suppliername = this.$route.params.name
 				getAllSupplier({
@@ -469,6 +472,7 @@
           }
 				})
 			},
+      /*添加供应商*/
 			addNewSuppliers() {
 				if(this.addsupplierobj.addsupplierName == "") {
 					this.$Message.info('请输入供应商名称')
@@ -476,6 +480,7 @@
 				if(this.addsupplierobj.addsupplierCode == "") {
 					this.$Message.info('请输入供应商编码')
 				}
+
 				this.addsupplierobj.addsuppliercategoryid = this.$route.params.categoryId
 				addSupplier({
 					ticket: this.$store.state.ticket,
@@ -514,6 +519,7 @@
           }
 				})
 			},
+      /*删除供应商*/
 			deleteSuppliers() {
 				deleteSupplier({
           ticket: sessionStorage.getItem("ticket"),
@@ -524,22 +530,31 @@
 					this.del_modal = false
 				})
 			},
+      /*确认删除*/
 			delTrue() {
 				this.deleteSuppliers()
 			},
+      /*取消删除*/
 			delFalse() {
 				this.del_modal = false
 			},
+      /*打开添加供应商模态框*/
 			OpenAddSupplier() {
+        this.addsupplierobj = {}
 				this.addsupplierobj.addsuppliercategoryid = this.$route.params.categoryId
+        this.addsupplierobj.addInitPayablesDT = new Date()
 				this.add_supplier = true;
+
 			},
+      /*关闭添加供应商模态框*/
 			closeAddModal() {
 				this.add_supplier = false;
 			},
+      /*关闭编辑供应商模态框*/
 			closeEditModal() {
 				this.edit_supplier = false;
 			},
+      /*获取供应商下拉菜单数据*/
 			getcategoryname() {
 				getSupplierCategoryList({
 					ticket: this.$store.state.ticket,
@@ -552,6 +567,7 @@
 					})
 				})
 			},
+      /*重置查询*/
 			rester() {
 				this.supplierCode = ''
 				this.supplierName = ''
@@ -572,19 +588,19 @@
 				del_modal: false,
 				delSupplierid: '',
 				addsupplierobj: {
-					addsuppliercategoryid: '',
-					addsupplierCode: '',
-					addsupplierName: '',
-					addsupplierAddress: '',
-					addsupplierContact1: '',
-					addsupplierMobile1: '',
-					addsupplierTel1: '',
-					addsupplierQQ1: '',
-					addsupplierContact2: '',
-					addsupplierMobile2: '',
-					addsupplierTel2: '',
-					addsupplierQQ2: '',
-					addsupplierFHAddress: '',
+					addsuppliercategoryid: '', //添加供应商分类id
+					addsupplierCode: '',   //添加供应商编码
+					addsupplierName: '',   //添加供应商名称
+					addsupplierAddress: '', //添加供应商地址
+					addsupplierContact1: '', //添加供应商联系人
+					addsupplierMobile1: '',  //添加供应商联系人手机
+					addsupplierTel1: '',  //添加供应商联系人固话
+					addsupplierQQ1: '',  //添加供应商联系人qq
+					addsupplierContact2: '',  //添加供应商备用联系人
+					addsupplierMobile2: '',   //添加供应商备用联系人手机
+					addsupplierTel2: '',  //添加供应商备用联系人固话
+					addsupplierQQ2: '',  //添加供应商备用联系人qq
+					addsupplierFHAddress: '', //添加供应商备用联系人
 					addsupplierBankName: '',
 					addsupplierBankAccount: '',
 					addTaxNumber: '',
@@ -691,12 +707,12 @@
 						width: 130,
 					}, {
 						title: '备用联系人固话',
-						key: 'data',
+						key: 'tel02',
 						align: "center",
 						width: 130,
 					}, {
 						title: '备用联系人QQ',
-						key: 'tel02',
+						key: 'qq02',
 						align: "center",
 						width: 120,
 					}, {
@@ -707,17 +723,17 @@
 					}, {
 						title: '开户行',
 						align: "center",
-						key: 'init_receivables',
+						key: 'bank_name',
 						width: 135,
 					}, {
 						title: '开户行账户',
 						align: "center",
-						key: 'init_receivables_dt',
+						key: 'bank_account',
 						width: 135,
 					}, {
 						title: '税号',
 						align: "center",
-						key: 'bank_name',
+						key: 'tax_number',
 						width: 110,
 					}, {
 						title: '传真',
@@ -727,7 +743,7 @@
 					}, {
 						title: '税率(%)',
 						align: "center",
-						key: 'tax_number',
+						key: 'tax_rate',
 						width: 100,
 					}, {
 						title: '应付期初余额',

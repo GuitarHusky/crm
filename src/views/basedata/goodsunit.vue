@@ -135,6 +135,7 @@
       changepage() {},
       addUnit() {
         this.add_unit = true;
+        this.add_ji = ""
       },
       closeAddModal() {
         this.add_unit = false;

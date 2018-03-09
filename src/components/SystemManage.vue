@@ -47,7 +47,7 @@
     data() {
       return {
         nav_list: [{
-            to: '/m/usermanage',
+            to: '/m/manage-list',
             name: '1-1',
             text: '用户管理',
             icon: 'person'

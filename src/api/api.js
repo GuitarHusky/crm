@@ -105,7 +105,7 @@ export const delOrg = params => {
 export const getUser = params => {
   let param = new FormData();
   param.append('ticket', params.ticket);
-  return axios.post(`https://crm.jianong.com.cn/api/v1/users/getAllUser`).then(res => res.data);
+  return axios.post(`https://crm.jianong.com.cn/api/v1/users/getAllUser`, param).then(res => res.data);
 }
 
 
@@ -524,7 +524,9 @@ export const deletePurchaseStore = params => {
 
 //库存-库存帐查询-仓库列表
 export const getAllStock  = params => {
-  return axios.get(`${crm}/api/v1/PurchaseStorage/getAllWarehouse`, params).then(res => res.data);
+  return axios.get(`${crm}/api/v1/PurchaseStorage/getAllWarehouse`, {
+    params: params
+  }).then(res => res.data);
 };
 //库存-库存帐查询-仓库列表详情-仓库总账
 export const getStockBillList  = params => {
@@ -776,19 +778,19 @@ export const rvRecordList = params => {
 export const salePortal = params => {
   let param = new FormData(); //创建form对象
   param.append('ticket', params.ticket);
-  return axios.post(`${crm}/api/v1/salePortal`).then(res => res.data);
+  return axios.post(`${crm}/api/v1/salePortal`,param).then(res => res.data);
 };
 //文件->首页的库存看板
 export const inventoryPortal = params => {
   let param = new FormData(); //创建form对象
   param.append('ticket', params.ticket);
-  return axios.post(`${crm}/api/v1/inventoryPortal`).then(res => res.data);
+  return axios.post(`${crm}/api/v1/inventoryPortal`,param).then(res => res.data);
 };
 //文件->首页的采购看板
 export const purchasePortal = params => {
   let param = new FormData(); //创建form对象
   param.append('ticket', params.ticket);
-  return axios.post(`${crm}/api/v1/purchasePortal`).then(res => res.data);
+  return axios.post(`${crm}/api/v1/purchasePortal`,param).then(res => res.data);
 };
 //文件->首页的资金看板
 //export const moneyPortal = params => {
@@ -1052,5 +1054,12 @@ export const commitStore = params => {
 };
 /*add 采购提交入库end*/
 
+/*获取溯源码贴码级别信息*/
+export const gettmjb = params => {
+  return axios.get(`https://crm.jianong.com.cn/api/v1/Goods/getTmjbInfo`, {
+    params: params
+  }).then(res => res.data);
+};
+/*获取溯源码贴码级别信息end*/
 
 

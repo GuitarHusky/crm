@@ -233,6 +233,8 @@
       changepage(){},
       addSupplier(){
         this.add_supplier=true;
+        this.addcategoryCode = ""
+        this.addcategoryName = ""
       },
       closeAddModal(){
         this.add_supplier=false;

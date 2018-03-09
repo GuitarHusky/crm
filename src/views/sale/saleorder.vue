@@ -60,10 +60,10 @@
 				</Col>
 			</Row>
 			</Col>
-			<Col span="1" style="text-align: center;margin-left:30px;">
+			<Col span="2" style="text-align: center;margin-left:30px;">
 			<Button type="primary" @click="searchClick">查询</Button>
 			</Col>
-			<Col span="1" style="text-align: center;">
+			<Col span="2" style="text-align: center;">
 			<Button type="primary" @click="replay">重置</Button>
 			</Col>
 		</Row>
@@ -232,7 +232,7 @@
 					{
 						title: '操作',
 						key: 'action',
-						width: 220,
+						width: 110,
 						fixed: 'right',
 						align: 'center',
 						render: (h, params) => {
@@ -251,7 +251,7 @@
 										}
 									}
 								}, '订单详情'),
-								h('Button', {
+								/*h('Button', {
 									props: {
 										type: 'primary',
 										size: 'default'
@@ -264,7 +264,7 @@
 											this.$router.push('/x/order-order-info/' + params.row.id)
 										}
 									}
-								}, '出库详情'),
+								}, '出库详情'),*/
 							]);
 						}
 					}
@@ -398,16 +398,7 @@
         var month2 = (end.getMonth() + 1)>=10?(end.getMonth() + 1):'0'+(end.getMonth() + 1)
         var day2 = end.getDate()>=10?end.getDate():'0'+end.getDate()
         this.toDT = end.getFullYear() + '-' + month2 + '-' + day2
-        if(start.getFullYear() < end.getDate()){
-          this.$Message.info("结束日期应大于开始日期！")
-          return
-        }else if(month1 < month2){
-          this.$Message.info("结束日期应大于开始日期！")
-          return
-        }else if(day1 < day2){
-          this.$Message.info("结束日期应大于开始日期！")
-          return
-        }
+
         if(this.fromDT == 'NaN-NaN-NaN'){
           this.fromDT = ''
         }
@@ -524,7 +515,8 @@
         }).then(res => {
 					this.state_list = res.data.status_bil
 					this.user_list = res.data.customers
-					this.pay_list = res.data.receiving_type
+          /*this.pay_list = res.data.receiving_type*/
+					this.pay_list.push(res.data.receiving_type[0])
 				})
 			},
 			delTrue() {

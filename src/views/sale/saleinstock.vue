@@ -70,10 +70,10 @@
 				</Col>
 			</Row>
 			</Col>
-			<Col span="1" style="text-align: center;margin-left:30px;">
+			<Col span="2" style="text-align: center;margin-left:30px;">
 			<Button type="primary" @click="search">查询</Button>
 			</Col>
-			<Col span="1" style="text-align: center;">
+			<Col span="2" style="text-align: center;">
 			<Button type="primary" @click="replay">重置</Button>
 			</Col>
 		</Row>

@@ -125,7 +125,7 @@
                   },
                   on: {
                     click: ()=> {
-                      console.log(params.row)
+                      /*console.log(params.row)*/
                       this.editId = params.row.id
                       this.editName = params.row.name
                       this.model2 = params.row.parent_id
@@ -289,6 +289,8 @@
       changepage() {},
       addBrand(){
         this.add_brand = true;
+        this.addName = ""
+        this.model1 = ""
       },
       closeAddModal(){
         this.add_brand = false;

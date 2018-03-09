@@ -178,7 +178,7 @@
 			})
 		},
 		methods: {
-      remove() {
+      /*remove() {
         var hkey_root, hkey_path, hkey_key;
         hkey_path = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
         try {
@@ -186,12 +186,12 @@
           RegWsh.RegWrite(hkey_path + "header", "");
           RegWsh.RegWrite(hkey_path + "footer", "");
         } catch(e) {}
-      },
+      },*/
 
 			doPrint() {
-        if(!!window.ActiveXObject || "ActiveXObject" in window) {
+       /* if(!!window.ActiveXObject || "ActiveXObject" in window) {
           this.remove();
-        }
+        }*/
         document.getElementById("printBtn").style.display = "none"
 				var newstr = document.getElementsByClassName('box')[0].innerHTML
 				document.body.innerHTML = newstr

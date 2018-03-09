@@ -44,7 +44,7 @@
 			商品分类
 			<Button type="primary" style="margin-left:50px;" @click="addUnit">新增商品</Button>
 		</div>
-		<Table stripe :columns="columns5" :data="goods_list"></Table>
+		<Table stripe :columns="goods_info" :data="goods_list"></Table>
 		<div class="page_unit">
 			<Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage" show-elevator></Page>
 		</div>
@@ -303,29 +303,34 @@
 </template>
 
 <script>
-	import { getGoods, addGoodsCategory, editGoodsCategory, delGoodsCategory, addGoods, getGoodsCategory, getGoodsUnit, getGoodsBrand, delGoods,getZsmInfo } from '../../../api/api'
+	import { getGoods, addGoodsCategory, editGoodsCategory, delGoodsCategory, addGoods, getGoodsCategory, getGoodsUnit, getGoodsBrand, delGoods,getZsmInfo,gettmjb } from '../../../api/api'
 	export default {
 		mounted() {
+      /*获取用户编码*/
       this.$store.state.ticket = sessionStorage.getItem("ticket")
+      /*获取商品列表*/
 			this.getGoodsList();
+      /*获取商品分类数据*/
 			getGoodsCategory({
 				ticket: this.$store.state.ticket
 			}).then(res => {
 				this.category_list = res.data
 			})
+      /*获取计量单位数据*/
 			getGoodsUnit({
 				ticket: this.$store.state.ticket
 			}).then(res => {
 				this.unit_list = res.data
 			})
+      /*获取商品品牌数据*/
 			getGoodsBrand({
 				ticket: this.$store.state.ticket
 			}).then(res => {
 				this.brand_list = res.data.data
 			})
-			if(this.curr_good_id == "") {
+			/*if(this.curr_good_id == "") {
 
-			}
+			}*/
 		},
 		data() {
 			return {
@@ -358,7 +363,7 @@
 				search_name: '', //查询时传的name
 				search_spec: '', //查询时传的型号
 				search_number: '', //查询时传的条形码
-				columns5: [{
+				goods_info: [{
 						title: '序号',
 						align: "center",
             width: 60,
@@ -482,10 +487,10 @@
 				],
 				pageSize: 20,
 				dataCount: 0,
-        scanmodal: false,
-        scancode: "",
-        basePriceState: false,
-        selfPriceState: false,
+        scanmodal: false, //扫码模态框状态
+        scancode: "",  //扫码信息
+        basePriceState: false,   //建议采购价输入框状态
+        selfPriceState: false,   //销售标准价输入框状态
 			}
 		},
 		methods: {
@@ -502,6 +507,7 @@
       /*点击弹出扫码框*/
       scanAddGoods(){
         this.scanmodal = true
+        this.scancode = ""
         this.getFoucs()
       },
       /*扫码框自动获取焦点*/
@@ -510,41 +516,36 @@
       },
       /*根据溯源码查询商品信息*/
       getGoodsInfo(){
-        this.scancode = this.scancode.split(",")[0]
-        getZsmInfo({
-               zsm: this.scancode
+        gettmjb({
+               ticket: sessionStorage.getItem("ticket"),
+               zsm: this.scancode.split('，')[0],
              }).then(res => {
-                if(res.retcode == "2001"){
-                  this.$Message.info("没有该商品，请重新扫描或手动录入商品！")
-                  this.scancode = ""
-                }
                 this.goods.category_id = this.$route.params.goods_id
-                /*this.goods.code = res.data.code
-                this.goods.name = res.data.name
-                this.goods.spec = res.data.spec
-                this.goods.qyname = res.data.qyname
-                this.goods.pzwh = res.data.pzwh
-                this.goods.tmjb = res.data.tmjb
-                this.goods.memo = res.data.memo
-                this.*/
-
-                this.goods.code = res.data.code
-                this.goods.name = res.data.name
-                this.goods.spec = res.data.spec
-                this.goods.qyname = res.data.qyname
-                this.goods.pzwh = res.data.pzwh
-                this.goods.tmjb = res.data.tmjb
-                this.goods.unit_id = res.data.unit_id
+                /*this.goods.code = res.data.code*/
+                this.goods.name = this.scancode.split('，')[1]
+                if(!res.data){
+                  this.goods.spec = ""
+                }else{
+                  this.goods.spec = res.data.specification
+                }
+                if(!res.data){
+                this.goods.tmjb = ""
+                }else{
+                  this.goods.tmjb = res.data.tmjb
+                }
+                this.goods.qyname = this.scancode.split('，')[3]
+                this.goods.pzwh = this.scancode.split('，')[2]
+                /*this.goods.unit_id = res.data.unit_id
                 this.goods.bar_code = res.data.bar_code
                 this.goods.brand_id = res.data.brand_id
                 this.goods.sale_price = res.data.sale_price
                 this.goods.purchase_price = res.data.purchase_price
-                this.goods.memo = res.data.memo
+                this.goods.memo = res.data.memo*/
                 this.scancode = ""
                 this.scanmodal = false
              })
       },
-
+      /*分页*/
 			changepage(index) {
 				getGoods({
 					ticket: this.$store.state.ticket,
@@ -568,6 +569,25 @@
 					})
 				})
 			},
+      /*清空表单*/
+      clearForm(){
+        this.goods.category_id = this.$route.params.goods_id
+        this.curr_good_id = ""
+        this.goods.code = ""
+        this.goods.name = ""
+        this.goods.qyname = ""
+        this.goods.pzwh = ""
+        this.goods.tmjb = 0
+        this.goods.spec = ""
+        this.goods.unit_id = ""
+        this.goods.bar_code = ""
+        this.goods.brand_id = ""
+        this.goods.sale_price = ""
+        this.goods.purchase_price = ""
+        this.goods.memo = ""
+        this.scancode = ""
+      },
+      /*打开添加商品模态框*/
 			addUnit() {
         if(sessionStorage.getItem("is_admin") == "1"){
           this.basePriceState = false
@@ -576,26 +596,14 @@
           this.basePriceState = true
           this.selfPriceState = false
         }
-        this.curr_good_id = ""
-        this.goods.category_id = this.$route.params.goods_id
-        this.goods.code = ""
-        this.goods.name = ""
-        this.goods.spec = ""
-        this.goods.qyname = ""
-        this.goods.pzwh = ""
-        this.goods.tmjb = 0
-        this.goods.unit_id = ""
-        this.goods.bar_code = ""
-        this.goods.brand_id = ""
-        this.goods.sale_price = ""
-        this.goods.purchase_price = ""
-        this.goods.memo = ""
-        this.scancode = ""
+        this.clearForm()
 				this.add_goods = true;
 			},
+      /*关闭添加商品模态框*/
 			closeAddModal() {
 				this.add_goods = false;
 			},
+      /*关闭添加商品模态框*/
 			closeEditModal() {
 				this.edit_goods = false;
 			},
@@ -719,20 +727,7 @@
 						this.$Message.info(res.msg);
 						this.edit_goods = false;
 						this.getGoodsList();
-            this.curr_good_id = ""
-            this.goods.category_id = this.$route.params.goods_id
-            this.goods.code = ""
-            this.goods.name = ""
-            this.qyname = ""
-            this.pzwh = ""
-            this.tmjb = ""
-            this.goods.spec = ""
-            this.goods.unit_id = ""
-            this.goods.bar_code = ""
-            this.goods.brand_id = ""
-            this.goods.sale_price = ""
-            this.goods.purchase_price = ""
-            this.goods.memo = ""
+            this.clearForm()
 					} else {
 						this.$Message.info(res.msg);
 					}
@@ -753,6 +748,7 @@
 					}
 				})
 			},
+      /*取消删除*/
 			delFalse() {
 				this.del_goods = false;
 			}

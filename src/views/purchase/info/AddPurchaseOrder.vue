@@ -62,16 +62,16 @@
         </Col>
       </Row>
       </Col>
-      <Col span="4">
-      <Row>
-        <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>组织机构</Col>
-        <Col span="16">
-        <Select v-model="orgsvalue">
-          <Option v-for="item in orgslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
-        </Col>
-      </Row>
-      </Col>
+     <!--  <Col span="4">
+     <Row>
+       <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>组织机构</Col>
+       <Col span="16">
+       <Select v-model="orgsvalue">
+         <Option v-for="item in orgslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+       </Select>
+       </Col>
+     </Row>
+     </Col> -->
       <Col span="4">
       <Row>
         <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>业务员</Col>
@@ -84,8 +84,8 @@
       </Col>
       <Col span="4">
       <Row>
-        <Col span="6" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>付款方式</Col>
-        <Col span="18">
+        <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>付款方式</Col>
+        <Col span="16">
         <Select v-model="paymentvalue">
           <Option v-for="item in paymentlist" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
@@ -292,16 +292,16 @@
         supplierlist: [],
         orgslist: [],
         paymentlist: [
-        {
+        /*{
           value: 0,
           label: '记应付账款'
-        },{
+        },*/{
           value: 1,
           label: '现金付款'
-        },{
+        }/*,{
           value: 2,
           label: '预付款'
-        },
+        },*/
         ],
         alluserslist: [],
         odd_number: '保存后自动生成',
@@ -380,38 +380,44 @@
       methods:{
         /*根据扫描得到的码获取商品信息*/
         getGoodsInfo(){
-          /*console.log(this.scancode)*/
-
-           var codeInfo = this.scancode.split("，")
-           /*console.log(codeInfo)*/
-           this.scancode = codeInfo[0]
-           if(codeInfo.length > 1){
-             getZsmInfo({
-               ticket: sessionStorage.getItem("ticket"),
-               zsm: this.scancode
-             }).then(res => {
-                if(res.retcode == "2001"){
-                  this.$Message.info("没有该商品，请重新扫描!")
-                  this.scancode = ""
-                }
-                for(var i=0;i<this.table.lists.length;i++){
-                  if(this.table.lists[i].goods_id == res.data.id){
-                    this.$Message.info("不可选择重复商品")
-                    this.scancode = ""
-                    return
-                  }
-                }
-
-                this.goods_obj.goods_id = res.data.id;
-                this.goods_obj.code = res.data.code;
-                this.goods_obj.name = res.data.name;
-                this.goods_obj.spec = res.data.spec;
-                this.goods_obj.unit_id = res.data.unit_name;
-                this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
-                this.scancode = ""
-                this.scanmodal = false;
-                this.tab_key ++
-             })
+          var hell = this.scancode.split('，').length
+        if(hell > 1) {
+          getZsmInfo({
+            ticket: sessionStorage.getItem("ticket"),
+            zsm: this.scancode.split('，')[0],
+            pzwh: this.scancode.split('，')[2],
+          }).then(res => {
+            /*console.log(res)*/
+            if(res.retcode == "2001" || !res.data) {
+              this.$Message.info("没有该商品，请重新扫描!");
+              this.scancode = "";
+              return;
+            }
+            if(res.data.length>1){
+              this.add_orders = true;
+              this.goods_list = res.data;
+              this.scanmodal = false;
+              return;
+            }else if(res.data[0]){
+              for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goods_id == res.data[0].id) {
+                this.$Message.info("不可选择重复商品");
+                this.scancode = '';
+                return;
+              }
+            }
+              this.checkData(res.data[0]);
+              return
+            }
+            for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goods_id == res.data.id) {
+                this.$Message.info("不可选择重复商品");
+                this.scancode = '';
+                return;
+              }
+            }
+            this.checkData(res.data);
+          })
            }else {
              getOneGoods({
                  ticket: sessionStorage.getItem("ticket"),
@@ -428,21 +434,21 @@
                  return
                   }
                 }
-               this.goods_obj.goods_id = res.data.id;
-               this.goods_obj.code = res.data.code;
-               this.goods_obj.name = res.data.name;
-               this.goods_obj.spec = res.data.spec;
-               this.goods_obj.unit_id = res.data.unit_name;
-               this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
-               this.scancode = ""
-               this.scanmodal = false;
-               this.tab_key ++
+                this.checkData(res.data)
              })
            }
-
-/*
-          var a = util.scanGetGoodsData(this.scancode)
-          console.log(a)*/
+        },
+        checkData(obj){
+          this.goods_obj.goods_id = obj.id;
+          this.goods_obj.goods_price = obj.sale_price;
+          this.goods_obj.code = obj.code;
+          this.goods_obj.name = obj.name;
+          this.goods_obj.spec = obj.spec;
+          this.goods_obj.unit_id = obj.unit_name;
+          this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
+          this.scancode = ""
+          this.scanmodal = false;
+          this.tab_key ++
         },
         /*取消扫码*/
         escScan(){
@@ -532,10 +538,7 @@
           this.$Message.info("请填写传真")
           return
         }
-        if(this.orgsvalue == "" || this.orgsvalue == null){
-          this.$Message.info("请选择组织机构")
-          return
-        }
+        this.orgsvalue = ""
         if(this.allusersvalue == "" || this.allusersvalue == null){
           this.$Message.info("请选择业务员")
           return
@@ -593,6 +596,7 @@
       showProduct: function(key) {
         this.tab_key = key;
         this.add_orders = true;
+         this.getGoodsList();
       },
       delInput(key) {
         if(key != 0) {
@@ -615,8 +619,6 @@
         });
       },
       getGoodsList() {
-        // 初始化
-        this.table.lists[0] = this.goods_obj;
         getGoods({
           ticket: this.$store.state.ticket,
         }).then(res => {
@@ -642,6 +644,7 @@
         this.table.lists[this.tab_key].unit_id = currentRow.unit_name;*/
 
         this.goods_obj.goods_id = currentRow.id;
+        this.goods_obj.goods_price = currentRow.sale_price;
         this.goods_obj.code = currentRow.code;
         this.goods_obj.name = currentRow.name;
         this.goods_obj.spec = currentRow.spec;
@@ -672,6 +675,7 @@
       this.getAllOrgsinfo()
       this.getAllSupplierinfo()
       this.getGoodsList()
+      this.table.lists[0] = this.goods_obj;
     }
   }
 </script>

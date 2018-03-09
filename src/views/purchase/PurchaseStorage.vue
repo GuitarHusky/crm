@@ -61,7 +61,7 @@
       </Row>
       </Col>
       <Col span="2" style="text-align: center;">
-      <Button type="primary" @click="search">查询</Button>
+      <Button type="primary" @click="search" id="searchBtn">查询</Button>
       </Col>
       <Col span="2" style="text-align: center;">
       <Button type="primary" @click="reset">重置</Button>
@@ -189,16 +189,16 @@
           }
         }],
          paymenttypelist: [
-        {
+       /* {
           value: 0,
           label: '记应付账款'
-        },{
+        },*/{
           value: 1,
           label: '现金付款'
-        },{
+        }/*,{
           value: 2,
           label: '预付款'
-        },
+        },*/
         ],
         orderstatuslist:[
         {
@@ -365,20 +365,16 @@
       search(){
         this.stocksdata = []
         this.dataCount = 0
-        this.purchaseorderdata = []
+        document.getElementById("searchBtn").disabled = true
         /*console.log(this.orderstatusvalue)*/
         if(this.orderstatusvalue == '500'){
           this.orderstatusvalue = ''
         }
 
-        var start = new Date(this.starttime)
-        var month1 = (start.getMonth() + 1)>=10?(start.getMonth() + 1):'0'+(start.getMonth() + 1)
-        var day1 = start.getDate()>=10?start.getDate():'0'+start.getDate()
-        this.starttime = start.getFullYear() + '-' + month1 + '-' + day1
+         var start = new Date(this.starttime)
+        this.starttime = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate()
         var end = new Date(this.endtime)
-        var month2 = (end.getMonth() + 1)>=10?(end.getMonth() + 1):'0'+(end.getMonth() + 1)
-        var day2 = end.getDate()>=10?end.getDate():'0'+end.getDate()
-        this.endtime = end.getFullYear() + '-' + month2 + '-' + day2
+        this.endtime = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate()
         if(this.starttime == 'NaN-NaN-NaN'){
           this.starttime = ''
         }
@@ -395,6 +391,12 @@
           end_time: this.endtime,
           payment_type: this.paymenttypevalue,
         }).then(res => {
+           if(!res || res.retcode != "2000"){
+              this.$Message.info("没有符合条件的订单")
+              document.getElementById("searchBtn").disabled = false
+              return
+            }
+
           /*console.log(res)*/
           var num = 1
           res.data.forEach((item,index) => {
@@ -413,6 +415,7 @@
             this.dataCount = item.count
             item.base_info['numid'] = num++
             this.stocksdata.push(item.base_info)
+            document.getElementById("searchBtn").disabled = false
           })
         })
       },

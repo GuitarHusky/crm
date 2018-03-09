@@ -61,7 +61,7 @@
 			</Row>
 			</Col>
 			<Col span="2" style="text-align: center;">
-			<Button type="primary" @click="searchPurchase">查询</Button>
+			<Button type="primary" @click="searchPurchase" id="searchBtn">查询</Button>
 			</Col>
 			<Col span="2" style="text-align: center;">
 			<Button type="primary" @click="reset">重置</Button>
@@ -361,34 +361,39 @@
       /*查询*/
       searchPurchase(){
         this.dataCount = 0
+        document.getElementById("searchBtn").disabled = true
         /*console.log(this.orderstatusvalue)*/
         this.purchaseorderdata = []
         if(this.orderstatusvalue == '500'){
           this.orderstatusvalue = ''
         }
+
         var start = new Date(this.starttime)
-        var month1 = (start.getMonth() + 1)>=10?(start.getMonth() + 1):'0'+(start.getMonth() + 1)
-        var day1 = start.getDate()>=10?start.getDate():'0'+start.getDate()
-        this.starttime = start.getFullYear() + '-' + month1 + '-' + day1
+        this.starttime = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate()
         var end = new Date(this.endtime)
-        var month2 = (end.getMonth() + 1)>=10?(end.getMonth() + 1):'0'+(end.getMonth() + 1)
-        var day2 = end.getDate()>=10?end.getDate():'0'+end.getDate()
-        this.endtime = end.getFullYear() + '-' + month2 + '-' + day2
+        this.endtime = end.getFullYear() + '-' + (end.getMonth() + 1) + '-' + end.getDate()
         if(this.starttime == 'NaN-NaN-NaN'){
           this.starttime = ''
         }
         if(this.endtime == 'NaN-NaN-NaN'){
           this.endtime = ''
         }
+
         getPurchaseOrderList({
            ticket: sessionStorage.getItem("ticket"),
            ref: this.ordernumber,
+           page: 1,
            bill_status: this.orderstatusvalue,
            supplier_id: this.supplierlistvalue,
            start_time: this.starttime,
            end_time: this.endtime,
            payment_type: this.paymenttypevalue,
         }).then(res => {
+          if(!res || res.retcode != "2000"){
+              this.$Message.info("没有符合条件的订单")
+              document.getElementById("searchBtn").disabled = false
+              return
+            }
           var num = 1
           res.data.forEach((item,index) => {
             if(item.base_info.bill_status == 0){
@@ -411,6 +416,8 @@
             item.base_info['numid'] = num++
             this.purchaseorderdata.push(item.base_info)
             this.dataCount = item.count
+            document.getElementById("searchBtn").disabled = false
+
           })
         })
       },
@@ -488,16 +495,16 @@
         supplierlistvalue: '',
         supplierlist: [],
         paymenttypelist: [
-        {
+        /*{
           value: 0,
           label: '记应付账款'
-        },{
+        },*/{
           value: 1,
           label: '现金付款'
-        },{
+        }/*,{
           value: 2,
           label: '预付款'
-        },
+        },*/
         ],
         orderstatuslist:[
         {

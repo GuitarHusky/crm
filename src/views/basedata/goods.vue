@@ -195,14 +195,18 @@
     },
     methods: {
       changepage() {},
+      clearForm(){
+        this.add_code = ""
+        this.add_name = ""
+        this.add_superior = ""
+      },
       addUnit() {
         this.add_goods = true;
+        this.clearForm()
       },
       closeAddModal() {
         this.add_goods = false;
-        this.add_code='';
-        this.add_name='';
-        this.add_superior='';
+        this.clearForm()
       },
       closeEditModal() {
         this.edit_goods = false;
@@ -239,9 +243,7 @@
             this.$Message.info(res.msg);
             this.add_goods = false;
             this.getGoodsList();
-            this.add_code='';
-            this.add_name='';
-            this.add_superior='';
+            this.clearForm()
           } else {
             this.$Message.info(res.msg);
           }

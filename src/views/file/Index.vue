@@ -26,20 +26,20 @@
 						<p>采购总额</p>
 					</div>
 				</li>
-				<li>
-					<div class="file_data_left"><img src="../../assets/file_four.png" alt="" /></div>
-					<div class="file_data_right">
-						<p><span class="file_data_num">{{balanceMoney_shou|filterNumber}}</span></p>
-						<p>应收账款</p>
-					</div>
-				</li>
-				<li>
-					<div class="file_data_left"><img src="../../assets/file_five.png" alt="" /></div>
-					<div class="file_data_right">
-						<p class="file_data_num"><span class="file_data_num">{{balanceMoney_fu|filterNumber}}</span></p>
-						<p>应付账款</p>
-					</div>
-				</li>
+				<!-- <li>
+          <div class="file_data_left"><img src="../../assets/file_four.png" alt="" /></div>
+          <div class="file_data_right">
+            <p><span class="file_data_num">{{balanceMoney_shou|filterNumber}}</span></p>
+            <p>应收账款</p>
+          </div>
+        </li> -->
+			<!--   <li>
+        <div class="file_data_left"><img src="../../assets/file_five.png" alt="" /></div>
+        <div class="file_data_right">
+          <p class="file_data_num"><span class="file_data_num">{{balanceMoney_fu|filterNumber}}</span></p>
+          <p>应付账款</p>
+        </div>
+      </li> -->
 			</ul>
 		</div>
 		<div style="height: 1px;"></div>
@@ -54,9 +54,9 @@
 				<TabPane label="采购看板" name="purchase" style='padding-top: 20px;'>
 					<Table stripe :columns="purchaseList" :data="purchaseData"></Table>
 				</TabPane>
-				<TabPane label="资金看板" name="capital" style='padding-top: 20px;'>
-					<Table stripe :columns="moneyList" :data="moneyData"></Table>
-				</TabPane>
+				<!-- <TabPane label="资金看板" name="capital" style='padding-top: 20px;'>
+          <Table stripe :columns="moneyList" :data="moneyData"></Table>
+        </TabPane> -->
 			</Tabs>
 		</div>
 	</div>

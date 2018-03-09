@@ -56,14 +56,14 @@
           icon: 'ios-copy-outline',
           join:'/user/',
           state: ''
-				}, {
+				}, /*{
 					to: '/capital',
           text: '资金',
           status: 0,
           icon: 'ios-calculator-outline',
           join:'/c/',
           state: ''
-				}, {
+				},*/ {
 					to: '/report',
           text: '报表',
           status: 0,
@@ -98,6 +98,10 @@
       }
       if(sessionStorage.getItem('is_admin') == 1){
         this.top_nav[this.top_nav.length-1]["status"] = 0
+      }else if(sessionStorage.getItem('is_admin') == 0){
+        this.top_nav[1]["status"] = 0
+        this.top_nav[2]["status"] = 0
+        this.top_nav[3]["status"] = 0
       }
 		}
 	}

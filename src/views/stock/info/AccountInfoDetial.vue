@@ -168,12 +168,16 @@
           page: 1
         }).then(res => {
          /* console.log(res)*/
+         if(!res.data || res.retcode != "2000"){
+            this.dataCount = 0
+            return
+          }
           var num = 1
           res.data.forEach((item,index) => {
             item['numid'] = num++
+          this.dataCount = item.count
           })
           this.stockbilldata = res.data
-          this.dataCount = res.data.length
         })
       },
       changepage(index){
@@ -191,12 +195,16 @@
           end_time: this.endtime,
           page: index
         }).then(res => {
+          if(!res.data || res.retcode != "2000"){
+            this.dataCount = 0
+            return
+          }
           var num = 1
           res.data.forEach((item,index) => {
             item['numid'] = num++
+            this.dataCount = item.count
           })
           this.stockbilldata = res.data
-          this.dataCount = res.data.length
         })
       },
       getBillInfoDetial(){
@@ -210,12 +218,16 @@
           end_time: '',
           page: 1
         }).then(res => {
+          if(!res.data || res.retcode != "2000"){
+            this.dataCount = 0
+            return
+          }
           var num = 1
           res.data.forEach((item,index) => {
             item['numid'] = num++
+            this.dataCount = item.count
           })
           this.stockbilldata = res.data
-          this.dataCount = res.data.length
         })
       }
     },

@@ -354,6 +354,8 @@
       changepage() {},
       addStock() {
         this.add_stock = true;
+        this.addStockCode = ""
+        this.addStockName = ""
       },
       closeAddModal() {
         this.add_stock = false;

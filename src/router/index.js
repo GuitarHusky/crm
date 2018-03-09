@@ -158,7 +158,7 @@ export default new Router({
 	}, {
 		path: '/systemmanage',
 		name: 'SystemManage',
-		redirect: '/m/usermanage',
+		redirect: '/m/manage-list',
 		component: SystemManage
 	}, {
 		path: '/p',
@@ -503,11 +503,11 @@ export default new Router({
 	}, {
 		path: '/m',
 		component: SystemManage,
-		children: [{
+		children: [/*{
 			path: 'usermanage',
 			name: 'UserManage',
 			component: UserManage
-		}, {
+		}, */{
 			path: 'powermanage',
 			name: 'PowerManage',
 			component: PowerManage
@@ -520,7 +520,7 @@ export default new Router({
 			name: 'BusinessSet',
 			component: BusinessSet
 		},{
-      path: 'manage-list/:manage_id',
+      path: 'manage-list',
       name: 'ManageList',
       component: ManageList
     }]

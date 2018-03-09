@@ -229,16 +229,16 @@
         supplierlist: [],
         orgslist: [],
         paymentlist: [
-        {
+       /* {
           value: 0,
           label: '记应付账款'
-        },{
+        },*/{
           value: 1,
           label: '现金付款'
-        },{
+        }/*,{
           value: 2,
           label: '预付款'
-        },
+        },*/
         ],
         alluserslist: [],
         odd_number: '保存后自动生成',
@@ -316,38 +316,44 @@
       methods:{
         /*根据扫描得到的码获取商品信息*/
         getGoodsInfo(){
-          /*console.log(this.scancode)*/
-
-          var codeInfo = this.scancode.split("，")
-           /*console.log(codeInfo)*/
-           this.scancode = codeInfo[0]
-           if(codeInfo.length > 1){
-             getZsmInfo({
-              ticket: sessionStorage.getItem("ticket"),
-               zsm: this.scancode
-             }).then(res => {
-              if(res.retcode == "2001"){
-                this.$Message.info("没有该商品，请重新扫描!")
-                  this.scancode = ""
+           var hell = this.scancode.split('，').length
+        if(hell > 1) {
+          getZsmInfo({
+            ticket: sessionStorage.getItem("ticket"),
+            zsm: this.scancode.split('，')[0],
+            pzwh: this.scancode.split('，')[2],
+          }).then(res => {
+            /*console.log(res)*/
+            if(res.retcode == "2001" || !res.data) {
+              this.$Message.info("没有该商品，请重新扫描!");
+              this.scancode = "";
+              return;
+            }
+            if(res.data.length>1){
+              this.add_orders = true;
+              this.goods_list = res.data;
+              this.scanmodal = false;
+              return;
+            }else if(res.data[0]){
+              for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goods_id == res.data[0].id) {
+                this.$Message.info("不可选择重复商品");
+                this.scancode = '';
+                return;
               }
-                for(var i=0;i<this.table.lists.length;i++){
-                  if(this.table.lists[i].goods_id == res.data.id){
-                    this.$Message.info("不可选择重复商品")
-                    this.scancode = ""
-                    return
-                  }
-                }
-
-                this.goods_obj.goods_id = res.data.id;
-                this.goods_obj.code = res.data.code;
-                this.goods_obj.name = res.data.name;
-                this.goods_obj.spec = res.data.spec;
-                this.goods_obj.unit_id = res.data.unit_name;
-                this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
-                this.scancode = ""
-                this.scanmodal = false;
-                this.tab_key ++
-             })
+            }
+              this.checkData(res.data[0]);
+              return
+            }
+            for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goods_id == res.data.id) {
+                this.$Message.info("不可选择重复商品");
+                this.scancode = '';
+                return;
+              }
+            }
+            this.checkData(res.data);
+          })
            }else {
              getOneGoods({
               ticket: sessionStorage.getItem("ticket"),
@@ -364,20 +370,22 @@
                  return
                   }
                 }
-               this.goods_obj.goods_id = res.data.id;
-               this.goods_obj.code = res.data.code;
-               this.goods_obj.name = res.data.name;
-               this.goods_obj.spec = res.data.spec;
-               this.goods_obj.unit_id = res.data.unit_name;
-               this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
-               this.scancode = ""
-               this.scanmodal = false;
-               this.tab_key ++
+              this.checkData(res.data);
              })
            }
 
         },
-
+         checkData(obj){
+          this.goods_obj.goods_id = obj.id;
+          this.goods_obj.code = obj.code;
+          this.goods_obj.name = obj.name;
+          this.goods_obj.spec = obj.spec;
+          this.goods_obj.unit_id = obj.unit_name;
+          this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
+          this.scancode = ""
+          this.scanmodal = false;
+          this.tab_key ++
+        },
         /*显示扫码弹框*/
         showSan(key){
           this.scanmodal = true
@@ -581,6 +589,7 @@
       showProduct: function(key) {
         this.tab_key = key;
         this.add_orders = true;
+        this.getGoodsList();
       },
       delInput(key) {
         if(key != 0) {

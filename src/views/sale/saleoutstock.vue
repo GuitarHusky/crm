@@ -70,10 +70,10 @@
 				</Col>
 			</Row>
 			</Col>
-			<Col span="1" style="text-align: center;margin-left:30px;">
+			<Col span="2" style="text-align: center;margin-left:30px;">
 			<Button type="primary" @click="search">查询</Button>
 			</Col>
-			<Col span="1" style="text-align: center;">
+			<Col span="2" style="text-align: center;">
 			<Button type="primary" @click="replay">重置</Button>
 			</Col>
 		</Row>
@@ -334,9 +334,9 @@
 								item.bill_status = '待出库'
 							}
 						if(item.receiving_type == 0) {
-							item.receiving_type = '现金收账'
-						} else {
 							item.receiving_type = '记应收账款'
+						} else {
+							item.receiving_type = '现金收款'
 						}
 					})
 				})
@@ -388,9 +388,9 @@
 								item.bill_status = '待出库'
 							}
 						if(item.receiving_type == 0) {
-							item.receiving_type = '现金收账'
-						} else {
 							item.receiving_type = '记应收账款'
+						} else {
+							item.receiving_type = '现金收款'
 						}
 					})
 				})
@@ -463,7 +463,8 @@
       }).then(res => {
 				this.status_list = res.data.status_bill
 				this.user_list = res.data.user_name
-				this.money_list = res.data.receiving_type
+        /*this.money_list = res.data.receiving_type*/
+				this.money_list.push(res.data.receiving_type[0])
 			})
 			this.$store.state.ticket = sessionStorage.getItem("ticket")
 			getWarehouse({

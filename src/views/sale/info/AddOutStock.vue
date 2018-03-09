@@ -251,6 +251,7 @@
 			this.getAllOrgsinfo();
 			this.getAllUsersinfo();
 			this.getStockList();
+      this.table.lists[0] = this.sale_obj
 		},
 		data() {
 			return {
@@ -327,10 +328,10 @@
 				sobillRef: '',
 				orgslist: [], //组织机构列表
 				alluserslist: [], //业务员列表
-				paymentlist: [{
+				paymentlist: [/*{
 					value: 0,
 					label: '记应收账款'
-				}, {
+				}, */{
 					value: 1,
 					label: '现金付款'
 				}],
@@ -365,33 +366,43 @@
 			//点击扫码入库时弹出扫码入库模态框,当输入内容的时候
 			chooseGoods() {
 				var hell = this.scancode.split('，').length
-				if(hell > 1) {
-					getZsmInfo({
+        if(hell > 1) {
+          getZsmInfo({
             ticket: sessionStorage.getItem("ticket"),
-						zsm: this.scancode.split('，')[0]
-					}).then(res => {
-            if(res.retcode == "2001"){
-              this.$Message.info("没有该商品，请重新扫描!")
-                  this.scancode = ""
+            zsm: this.scancode.split('，')[0],
+            pzwh: this.scancode.split('，')[2],
+          }).then(res => {
+            /*console.log(res)*/
+            if(res.retcode == "2001") {
+              this.$Message.info("没有该商品，请重新扫描!");
+              this.scancode = "";
+              return;
             }
-						for(var i = 0; i < this.table.lists.length; i++) {
-							if(this.table.lists[i].goodsId == res.data.id) {
-								this.$Message.info("不可选择重复商品")
-								this.scancode = ''
-								return
-							}
-						}
-						this.sale_obj.name = res.data.name;
-						this.sale_obj.spec = res.data.spec;
-						//this.sale_obj.unit_name = res.data.unit_name;
-						this.sale_obj.code = res.data.code;
-						this.sale_obj.goodsId = res.data.id
-						this.sale_obj.memo = res.data.memo
-						this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
-						this.tab_key++
-						this.scancode = ''
-						this.scanmodal = false;
-					})
+            if(res.data.length>1){
+              this.add_orders = true;
+              this.goods_list = res.data;
+              this.scanmodal = false;
+              return;
+            }else if(res.data[0]){
+              for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goodsId == res.data[0].id) {
+                this.$Message.info("不可选择重复商品");
+                this.scancode = '';
+                return;
+              }
+            }
+              this.checkData(res.data[0]);
+              return
+            }
+            for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goodsId == res.data.id) {
+                this.$Message.info("不可选择重复商品");
+                this.scancode = '';
+                return;
+              }
+            }
+            this.checkData(res.data);
+          })
 				} else {
 					getOneGoods({
             ticket: sessionStorage.getItem("ticket"),
@@ -408,22 +419,27 @@
 								return
 							}
 						}
-						this.sale_obj.name = res.data.name;
-						this.sale_obj.spec = res.data.spec;
-						this.sale_obj.unit_name = res.data.unit_name;
-						this.sale_obj.code = res.data.code;
-						this.sale_obj.goodsId = res.data.id
-						this.sale_obj.memo = res.data.memo
-						this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
-						this.tab_key++
-							this.scancode = ''
-						this.scanmodal = false;
+            this.checkData(res.data)
 					})
 				}
 			},
+      checkData(obj){
+        this.sale_obj.name = obj.name;
+        this.sale_obj.spec = obj.spec;
+        this.sale_obj.unitName = obj.unit_name;
+        this.sale_obj.code = obj.code;
+        this.sale_obj.goodsId = obj.id
+        this.sale_obj.goodsPrice = obj.sale_price
+        this.sale_obj.memo = obj.memo
+        this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
+        this.tab_key++
+        this.scancode = ''
+        this.scanmodal = false;
+      },
 			showProduct(key) {
 				this.tab_key = key;
 				this.add_orders = true;
+        this.getGoodsList();
 			},
 			delInput(key) {
 				if(key != 0) {
@@ -447,7 +463,6 @@
 				});
 			},
 			getGoodsList() {
-				this.table.lists[0] = this.sale_obj
 				getGoods({
 					ticket: this.$store.state.ticket,
 				}).then(res => {
@@ -471,6 +486,7 @@
 				this.sale_obj.unit_name = currentRow.unit_name;
 				this.sale_obj.code = currentRow.code;
 				this.sale_obj.goodsId = currentRow.id
+        this.sale_obj.goodsPrice = currentRow.sale_price
 				this.sale_obj.memo = currentRow.memo
 				this.sale_obj.soBillDetailId = ''
 				this.sale_obj.sn = ''

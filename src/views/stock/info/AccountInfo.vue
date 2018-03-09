@@ -130,12 +130,12 @@
 					title: '余额平均单价',
           width: 120,
           align: "center",
-					key: 'balance_money'
+					key: 'balance_price'
 				}, {
 					title: '余额总金额',
           width: 120,
           align: "center",
-					key: 'balance_price'
+					key: 'balance_money'
 				}, {
 					title: '操作',
 					key: 'action',
