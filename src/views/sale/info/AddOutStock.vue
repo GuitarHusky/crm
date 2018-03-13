@@ -205,10 +205,6 @@
 										{{totalPrice | filterByNumber}}
 									</td>
 									<td class=""></td>
-									<!--<td class="">
-										{{taxalPrice | filterByNumber}}
-									</td>
-									<td class="">{{taxtTotalMoney| filterByNumber}}</td>-->
 									<td class="">
 									</td>
 									<td class=""></td>
@@ -241,17 +237,17 @@
 </template>
 
 <script>
-	import { getGoods, allCustomer, getAllOrgs, getAllUsers,getUser, editWSBill, getAllStock, getOneGoods, getZsmInfo } from '../../../api/api'
+	import { getGoods, allCustomer, getAllOrgs, getAllUsers, getUser, editWSBill, getAllStock, getOneGoods, getZsmInfo } from '../../../api/api'
 	import util from '../../../common/util.js'
 	export default {
 		mounted() {
-      this.$store.state.ticket = sessionStorage.getItem("ticket")
+			this.$store.state.ticket = sessionStorage.getItem("ticket")
 			this.getGoodsList();
 			this.getAllCustomers();
 			this.getAllOrgsinfo();
 			this.getAllUsersinfo();
 			this.getStockList();
-      this.table.lists[0] = this.sale_obj
+			this.table.lists[0] = this.sale_obj
 		},
 		data() {
 			return {
@@ -328,10 +324,7 @@
 				sobillRef: '',
 				orgslist: [], //组织机构列表
 				alluserslist: [], //业务员列表
-				paymentlist: [/*{
-					value: 0,
-					label: '记应收账款'
-				}, */{
+				paymentlist: [{
 					value: 1,
 					label: '现金付款'
 				}],
@@ -353,7 +346,7 @@
 			//点击扫码入库触发事件
 			showSan(key) {
 				this.scanmodal = true;
-        this.scancode = ""
+				this.scancode = ""
 				this.getFoucs();
 				this.tab_key = key
 			},
@@ -366,52 +359,52 @@
 			//点击扫码入库时弹出扫码入库模态框,当输入内容的时候
 			chooseGoods() {
 				var hell = this.scancode.split('，').length
-        if(hell > 1) {
-          getZsmInfo({
-            ticket: sessionStorage.getItem("ticket"),
-            zsm: this.scancode.split('，')[0],
-            pzwh: this.scancode.split('，')[2],
-          }).then(res => {
-            /*console.log(res)*/
-            if(res.retcode == "2001") {
-              this.$Message.info("没有该商品，请重新扫描!");
-              this.scancode = "";
-              return;
-            }
-            if(res.data.length>1){
-              this.add_orders = true;
-              this.goods_list = res.data;
-              this.scanmodal = false;
-              return;
-            }else if(res.data[0]){
-              for(var i = 0; i < this.table.lists.length; i++) {
-              if(this.table.lists[i].goodsId == res.data[0].id) {
-                this.$Message.info("不可选择重复商品");
-                this.scancode = '';
-                return;
-              }
-            }
-              this.checkData(res.data[0]);
-              return
-            }
-            for(var i = 0; i < this.table.lists.length; i++) {
-              if(this.table.lists[i].goodsId == res.data.id) {
-                this.$Message.info("不可选择重复商品");
-                this.scancode = '';
-                return;
-              }
-            }
-            this.checkData(res.data);
-          })
+				if(hell > 1) {
+					getZsmInfo({
+						ticket: sessionStorage.getItem("ticket"),
+						zsm: this.scancode.split('，')[0],
+						pzwh: this.scancode.split('，')[2],
+					}).then(res => {
+						/*console.log(res)*/
+						if(res.retcode == "2001") {
+							this.$Message.info("没有该商品，请重新扫描!");
+							this.scancode = "";
+							return;
+						}
+						if(res.data.length > 1) {
+							this.add_orders = true;
+							this.goods_list = res.data;
+							this.scanmodal = false;
+							return;
+						} else if(res.data[0]) {
+							for(var i = 0; i < this.table.lists.length; i++) {
+								if(this.table.lists[i].goodsId == res.data[0].id) {
+									this.$Message.info("不可选择重复商品");
+									this.scancode = '';
+									return;
+								}
+							}
+							this.checkData(res.data[0]);
+							return
+						}
+						for(var i = 0; i < this.table.lists.length; i++) {
+							if(this.table.lists[i].goodsId == res.data.id) {
+								this.$Message.info("不可选择重复商品");
+								this.scancode = '';
+								return;
+							}
+						}
+						this.checkData(res.data);
+					})
 				} else {
 					getOneGoods({
-            ticket: sessionStorage.getItem("ticket"),
+						ticket: sessionStorage.getItem("ticket"),
 						bar_code: this.scancode
 					}).then(res => {
-            if(!res.data){
-              this.$Message.info("没有该商品，请重新扫描!")
-                  this.scancode = ""
-            }
+						if(!res.data) {
+							this.$Message.info("没有该商品，请重新扫描!")
+							this.scancode = ""
+						}
 						for(var i = 0; i < this.table.lists.length; i++) {
 							if(this.table.lists[i].goodsId == res.data.id) {
 								this.$Message.info("不可选择重复商品")
@@ -419,34 +412,38 @@
 								return
 							}
 						}
-            this.checkData(res.data)
+						this.checkData(res.data)
 					})
 				}
 			},
-      checkData(obj){
-        this.sale_obj.name = obj.name;
-        this.sale_obj.spec = obj.spec;
-        this.sale_obj.unitName = obj.unit_name;
-        this.sale_obj.code = obj.code;
-        this.sale_obj.goodsId = obj.id
-        this.sale_obj.goodsPrice = obj.sale_price
-        this.sale_obj.memo = obj.memo
-        this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
-        this.tab_key++
-        this.scancode = ''
-        this.scanmodal = false;
-      },
+			//抽出公共的赋值方法
+			checkData(obj) {
+				this.sale_obj.name = obj.name;
+				this.sale_obj.spec = obj.spec;
+				this.sale_obj.unitName = obj.unit_name;
+				this.sale_obj.code = obj.code;
+				this.sale_obj.goodsId = obj.id
+				this.sale_obj.goodsPrice = obj.sale_price
+				this.sale_obj.memo = obj.memo
+				this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
+				this.tab_key++;
+				this.scancode = '';
+				this.scanmodal = false;
+			},
+			//商品列表
 			showProduct(key) {
 				this.tab_key = key;
 				this.add_orders = true;
-        this.getGoodsList();
+				this.getGoodsList();
 			},
+			//删除行
 			delInput(key) {
 				if(key != 0) {
 					this.table.lists.splice(key, 1);
 					this.sumTotalPrice(key - 1);
 				}
 			},
+			//添加行
 			addInput() {
 				this.table.lists.push({
 					goodsId: '',
@@ -462,6 +459,7 @@
 					memo: '', //描述
 				});
 			},
+			//获取商品列表
 			getGoodsList() {
 				getGoods({
 					ticket: this.$store.state.ticket,
@@ -473,6 +471,7 @@
 					})
 				})
 			},
+			//插入商品列表弹窗中指定的行
 			appendTitle(currentRow) {
 				for(var i = 0; i < this.table.lists.length; i++) {
 					if(this.table.lists[i].goodsId == currentRow.id) {
@@ -480,19 +479,17 @@
 						return
 					}
 				}
-
 				this.sale_obj.name = currentRow.name;
 				this.sale_obj.spec = currentRow.spec;
 				this.sale_obj.unit_name = currentRow.unit_name;
 				this.sale_obj.code = currentRow.code;
 				this.sale_obj.goodsId = currentRow.id
-        this.sale_obj.goodsPrice = currentRow.sale_price
+				this.sale_obj.goodsPrice = currentRow.sale_price
 				this.sale_obj.memo = currentRow.memo
-				this.sale_obj.soBillDetailId = ''
-				this.sale_obj.sn = ''
-        this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
+				this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
 				this.add_orders = false;
 			},
+			//计算总价
 			sumTotalPrice(key) {
 				this.table.lists[key].goodsMoney =
 					parseFloat(this.table.lists[key].goodsCount) * parseFloat(this.table.lists[key].goodsPrice);
@@ -506,8 +503,8 @@
 					this.taxtTotalMoney += item.moneyWithTax;
 				})
 			},
+			//提交新建销售出库单
 			submitAddOrder() {
-
 				if(this.customerId.trim() == '') {
 					this.$Message.info("请选择用户!")
 					return;
@@ -528,18 +525,18 @@
 					this.$Message.info("请选择商品!")
 					return;
 				}
-        for(var i=0;i<this.table.lists.length;i++){
-          if(this.table.lists[i].goodsCount == "" || this.table.lists[i].goodsCount == 0){
-            this.$Message.info("请选择采购数量")
-            return
-          }
-          }
-          for(var i=0;i<this.table.lists.length;i++){
-          if(this.table.lists[i].goodsPrice == "" || this.table.lists[i].goodsPrice == 0){
-            this.$Message.info("请选择采购单价")
-            return
-          }
-          }
+				for(var i = 0; i < this.table.lists.length; i++) {
+					if(this.table.lists[i].goodsCount == "" || this.table.lists[i].goodsCount == 0) {
+						this.$Message.info("请选择采购数量")
+						return
+					}
+				}
+				for(var i = 0; i < this.table.lists.length; i++) {
+					if(this.table.lists[i].goodsPrice == "" || this.table.lists[i].goodsPrice == 0) {
+						this.$Message.info("请选择采购单价")
+						return
+					}
+				}
 				var adduser = {}
 				var datenow = new Date(this.bizDT)
 				this.bizDT = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
@@ -555,7 +552,7 @@
 				adduser.items = this.table.lists;
 				editWSBill({
 					jsonStr: adduser,
-          loginUserId: sessionStorage.getItem('ticket'),
+					loginUserId: sessionStorage.getItem('ticket'),
 				}).then(res => {
 					if(res.retcode == 2000) {
 						this.$Message.info(res.msg)
@@ -569,8 +566,8 @@
 			/*获取客户数据*/
 			getAllCustomers() {
 				allCustomer({
-          ticket: sessionStorage.getItem("ticket"),
-        }).then(res => {
+					ticket: sessionStorage.getItem("ticket"),
+				}).then(res => {
 					res.data.forEach((item, index) => {
 						var temp = {}
 						temp.label = item.name
@@ -582,8 +579,8 @@
 			/*获取组织机构列表*/
 			getAllOrgsinfo() {
 				getAllOrgs({
-          ticket: sessionStorage.getItem("ticket"),
-        }).then(res => {
+					ticket: sessionStorage.getItem("ticket"),
+				}).then(res => {
 					res.data.forEach((item, index) => {
 						var temp = {}
 						temp.value = item.id
@@ -595,8 +592,8 @@
 			/*获取业务员列表*/
 			getAllUsersinfo() {
 				getUser({
-          ticket: sessionStorage.getItem("ticket"),
-        }).then(res => {
+					ticket: sessionStorage.getItem("ticket"),
+				}).then(res => {
 					res.data.forEach((item, index) => {
 						var temp = {}
 						temp.value = item.id
@@ -608,9 +605,8 @@
 			//获取仓库列表
 			getStockList() {
 				getAllStock({
-          ticket: sessionStorage.getItem("ticket"),
-        }).then(res => {
-					console.log(res)
+					ticket: sessionStorage.getItem("ticket"),
+				}).then(res => {
 					this.stock_list = res.data;
 				})
 			}
@@ -622,15 +618,15 @@
 	input::-ms-input-placeholder {
 		text-align: center;
 	}
-
+	
 	input::-webkit-input-placeholder {
 		text-align: center;
 	}
-
+	
 	.Modal td {
 		border-right: 1px solid #e9eaec;
 	}
-
+	
 	.modea_input {
 		width: 80%;
 		text-align: center;

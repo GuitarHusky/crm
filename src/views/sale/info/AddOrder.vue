@@ -62,16 +62,6 @@
 				</Col>
 			</Row>
 			</Col>
-			<!-- <Col span="4">
-      <Row>
-        <Col span="8" style="text-align: center;"><span style="color: red;">*</span> 组织机构</Col>
-        <Col span="16">
-        <Select v-model='orgId'>
-          <Option v-for="(item,index) in orgslist" :value="item.value" :key="item.value">{{item.label}}</Option>
-        </Select>
-        </Col>
-      </Row>
-      </Col> -->
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 销售员</Col>
@@ -172,21 +162,6 @@
 										<span>剩余库存</span>
 									</div>
 								</th>
-								<!-- <th class="">
-                  <div class="ivu-table-cell">
-                    <span>税率(%)</span>
-                  </div>
-                </th>
-                <th class="">
-                  <div class="ivu-table-cell">
-                    <span>税金</span>
-                  </div>
-                </th>
-                <th class="">
-                  <div class="ivu-table-cell">
-                    <span>价税合计</span>
-                  </div>
-                </th> -->
 								<th class="">
 									<div class="ivu-table-cell">
 										<span>备注</span>
@@ -242,13 +217,6 @@
 									<td class="">
 										{{list.surplusInventory}}
 									</td>
-									<!-- <td class="">17%</td>
-                  <td class="">
-                    {{list.tax|filterByNumber}}
-                  </td>
-                  <td class="">
-                    {{list.moneyWithTax|filterByNumber}}
-                  </td> -->
 									<td class="">
 										<Input placeholder="备注" class='modea_input' v-model="list.memo"></Input>
 									</td>
@@ -290,11 +258,6 @@
 									<td>
 										<Input placeholder="抹零" class='modea_input' @on-keyup="getReviceableMoney" v-model="removeZero"></Input>
 									</td>
-									<!-- <td class=""></td>
-                  <td class="">
-                    {{taxalPrice | filterByNumber}}
-                  </td>
-                  <td class="">{{taxtTotalMoney| filterByNumber}}</td> -->
 									<td class="">
 										应收账款：
 									</td>
@@ -312,8 +275,6 @@
 							</p>
 							<i-table border :columns="goodsTitle" :data="goods_list" height="400" :highlight-row="hrow" @on-row-click="appendTitle"></i-table>
 						</Modal>
-
-
 						<Modal v-model="scanmodal" width="700">
 							<p slot="header" style="color:#2D8CF0;text-align:left;font-size:20px;">
 								<span>扫描商品码</span>
@@ -346,10 +307,7 @@
 			this.getAllCustomers();
 			this.getAllOrgsinfo();
 			this.getAllUsersinfo();
-      this.table.lists[0] = this.sale_obj
-		},
-		watch: {
-
+			this.table.lists[0] = this.sale_obj
 		},
 		data() {
 			return {
@@ -433,11 +391,8 @@
 				billMemo: "", //备注
 				orgslist: [], //组织机构列表
 				alluserslist: [], //业务员列表
-        saleNumList:[],
-				paymentlist: [/*{
-					value: 0,
-					label: '记应收账款'
-				}, */{
+				saleNumList: [],
+				paymentlist: [{
 					value: 1,
 					label: '现金付款'
 				}],
@@ -461,7 +416,7 @@
 		},
 		methods: {
 			//点击打印按钮
-			printAddOrder(){
+			printAddOrder() {
 
 			},
 			//点击取消按钮
@@ -482,30 +437,29 @@
 					getZsmInfo({
 						ticket: sessionStorage.getItem("ticket"),
 						zsm: this.scancode.split('，')[0],
-            pzwh: this.scancode.split('，')[2],
+						pzwh: this.scancode.split('，')[2],
 					}).then(res => {
-						/*console.log(res)*/
 						if(res.retcode == "2001" || !res.data) {
 							this.$Message.info("没有该商品，请重新扫描!");
 							this.scancode = "";
 							return;
 						}
-						if(res.data.length>1){
+						if(res.data.length > 1) {
 							this.add_orders = true;
 							this.goods_list = res.data;
 							this.scanmodal = false;
 							return;
-						}else if(res.data[0]){
-              for(var i = 0; i < this.table.lists.length; i++) {
-              if(this.table.lists[i].goodsId == res.data[0].id) {
-                this.$Message.info("不可选择重复商品");
-                this.scancode = '';
-                return;
-              }
-            }
-              this.checkData(res.data[0]);
-              return
-            }
+						} else if(res.data[0]) {
+							for(var i = 0; i < this.table.lists.length; i++) {
+								if(this.table.lists[i].goodsId == res.data[0].id) {
+									this.$Message.info("不可选择重复商品");
+									this.scancode = '';
+									return;
+								}
+							}
+							this.checkData(res.data[0]);
+							return
+						}
 						for(var i = 0; i < this.table.lists.length; i++) {
 							if(this.table.lists[i].goodsId == res.data.id) {
 								this.$Message.info("不可选择重复商品");
@@ -514,62 +468,69 @@
 							}
 						}
 						this.checkData(res.data);
+						this.tab_key++;
+						this.scancode = '';
+						this.scanmodal = false;
 					})
 				} else {
 					getOneGoods({
 						ticket: sessionStorage.getItem("ticket"),
 						bar_code: this.scancode
 					}).then(res => {
-              if(!res.data) {
-                this.$Message.info("没有该商品，请重新扫描!")
-                this.scancode = ""
-              }
-              for(var i = 0; i < this.table.lists.length; i++) {
-                if(this.table.lists[i].goodsId == res.data.id) {
-                  this.$Message.info("不可选择重复商品")
-                  this.scancode = ''
-                  return
-                }
-              }
-						  this.checkData(res.data);
+						if(!res.data) {
+							this.$Message.info("没有该商品，请重新扫描!")
+							this.scancode = ""
+						}
+						for(var i = 0; i < this.table.lists.length; i++) {
+							if(this.table.lists[i].goodsId == res.data.id) {
+								this.$Message.info("不可选择重复商品")
+								this.scancode = ''
+								return
+							}
+						}
+						this.checkData(res.data);
+						this.tab_key++;
+						this.scancode = '';
+						this.scanmodal = false;
 					})
 				}
 			},
-      checkData(obj){
-            this.sale_obj.name = obj.name;
-            this.sale_obj.spec = obj.spec;
-            this.sale_obj.unit_name = obj.unit_name;
-            this.sale_obj.code = obj.code;
-            this.sale_obj.goodsId = obj.id
-            this.sale_obj.goodsPrice = obj.sale_price
-            this.sale_obj.discount = "0.00"
-            this.sale_obj.accountPrice = 0
-            this.sale_obj.isGiveaway = 0
-            this.sale_obj.surplusInventory = parseInt(obj.goods_balance_count)
-            this.saleNumList[this.tab_key] = util.deepClone(this.sale_obj.surplusInventory)
-            this.sale_obj.memo = obj.memo
-            this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
-            this.tab_key++;
-            this.scancode = '';
-            this.scanmodal = false;
-      },
+			//抽出公共的赋值对象
+			checkData(obj) {
+				this.sale_obj.name = obj.name;
+				this.sale_obj.spec = obj.spec;
+				this.sale_obj.unit_name = obj.unit_name;
+				this.sale_obj.code = obj.code;
+				this.sale_obj.goodsId = obj.id
+				this.sale_obj.goodsPrice = obj.sale_price
+				this.sale_obj.discount = "0.00"
+				this.sale_obj.accountPrice = 0
+				this.sale_obj.isGiveaway = 0
+				this.sale_obj.surplusInventory = parseInt(obj.goods_balance_count)
+				this.saleNumList[this.tab_key] = util.deepClone(this.sale_obj.surplusInventory)
+				this.sale_obj.memo = obj.memo
+				this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
+			},
 			//获取焦点事件,因dom加载导致方法不能成功生效,第一:用自己写的input,第二:加30毫秒的延迟
 			getFoucs() {
 				setTimeout(function() {
 					document.querySelector('#getfoucs').focus();
 				}, 30);
 			},
+			//显示销售列表
 			showProduct(key) {
 				this.tab_key = key;
 				this.add_orders = true;
 				this.getGoodsList();
 			},
+			//点击删除按钮
 			delInput(key) {
 				if(key != 0) {
 					this.table.lists.splice(key, 1);
 					this.sumTotalPrice(key - 1);
 				}
 			},
+			//点击添加按钮
 			addInput() {
 				this.table.lists.push({
 					goodsId: '',
@@ -591,6 +552,7 @@
 					memo: '', //描述
 				});
 			},
+			//商品列表
 			getGoodsList() {
 				getGoods({
 					ticket: this.$store.state.ticket,
@@ -602,39 +564,26 @@
 					})
 				})
 			},
+			//添加行
 			appendTitle(currentRow) {
-				/*console.log(currentRow)*/
 				for(var i = 0; i < this.table.lists.length; i++) {
 					if(this.table.lists[i].goodsId == currentRow.id) {
 						this.$Message.info("不可选择重复商品")
 						return
 					}
 				}
-				this.sale_obj.name = currentRow.name;
-				this.sale_obj.spec = currentRow.spec;
-				this.sale_obj.unit_name = currentRow.unit_name;
-				this.sale_obj.code = currentRow.code;
-        this.sale_obj.goodsId = currentRow.id
-				this.sale_obj.goodsPrice = currentRow.sale_price
-				this.sale_obj.discount = "0.00"
-				this.sale_obj.accountPrice = 0
-				this.sale_obj.isGiveaway = 0
-				this.sale_obj.surplusInventory = parseInt(currentRow.goods_balance_count)
-        this.saleNumList[this.tab_key] = util.deepClone(this.sale_obj.surplusInventory)
-				this.sale_obj.memo = currentRow.memo
-				this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
+				this.checkData(currentRow);
 				this.add_orders = false;
 			},
+			//计算应收账款
 			getReviceableMoney() {
 				this.receivableMoney = this.accountPriceTotal - this.removeZero;
 			},
 			//修改销售数量时同步修改剩余库存数
 			numberChange(key) {
-				//if( this.table.lists[key].goodsCount )saleNumList
-      /*console.log(this.saleNumList)*/  //
 				this.table.lists[key].surplusInventory = parseInt(this.saleNumList[key]) - parseInt(this.table.lists[key].goodsCount);
-
 			},
+			//计算总价格
 			sumTotalPrice(key) {
 				this.table.lists[key].goodsMoney =
 					parseFloat(this.table.lists[key].goodsCount) * parseFloat(this.table.lists[key].goodsPrice);
@@ -661,6 +610,7 @@
 				})
 				this.receivableMoney = this.accountPriceTotal - this.removeZero;
 			},
+			//提交订单
 			submitAddOrder() {
 				if(this.customerId.trim() == '') {
 					this.$Message.info("请选择用户!")
@@ -707,6 +657,7 @@
 				adduser.receivingType = this.receivingType;
 				adduser.billMemo = this.billMemo;
 				adduser.items = this.table.lists;
+				
 				addSOBill({
 					jsonStr: adduser,
 					loginUserId: sessionStorage.getItem('ticket'),
@@ -766,15 +717,15 @@
 	input::-ms-input-placeholder {
 		text-align: center;
 	}
-
+	
 	input::-webkit-input-placeholder {
 		text-align: center;
 	}
-
+	
 	.Modal td {
 		border-right: 1px solid #e9eaec;
 	}
-
+	
 	.modea_input {
 		width: 80%;
 		text-align: center;

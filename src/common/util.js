@@ -2,7 +2,7 @@
  * Created by ouyang on 2017/06/14.
  */
 
-/*import { getOneGoods,getZsmInfo } from '../api/api'*/
+import { getOneGoods,getZsmInfo } from '../api/api'
 var util ={
 
 	//深复制，去除关联性
@@ -19,7 +19,7 @@ var util ={
 		return json;
 	},
 
-  /*//判断二维码||条形码  获取商品信息
+  //判断二维码||条形码  获取商品信息
   scanGetGoodsData:function(scancode){
     var codeInfo = scancode.split(",")
     var goodsData = {}
@@ -38,7 +38,7 @@ var util ={
          return goodsData
       })
     }
-  },*/
+  },
 
 }
 

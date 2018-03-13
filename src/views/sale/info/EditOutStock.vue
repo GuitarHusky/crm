@@ -172,13 +172,6 @@
 									</td>
 									<td class="">{{list.sn}}</Input>
 									</td>
-									<!--<td class="">17%</td>
-									<td class="">
-										{{list.tax|filterByNumber}}
-									</td>
-									<td class="">
-										{{list.moneyWithTax|filterByNumber}}
-									</td>-->
 									<td class="">
 										<Input placeholder="备注" class='modea_input' v-model="list.memo"></Input>
 									</td>
@@ -205,10 +198,6 @@
 										{{totalPrice | filterByNumber}}
 									</td>
 									<td class=""></td>
-									<!--<td class="">
-										{{taxalPrice | filterByNumber}}
-									</td>
-									<td class="">{{taxtTotalMoney| filterByNumber}}</td>-->
 									<td class="">
 									</td>
 									<td class=""></td>

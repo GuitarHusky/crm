@@ -15,13 +15,13 @@ Vue.prototype.$echarts = echarts
 Vue.use(iView)
 Vue.use(Vuex)
 
-/*Vue.config.productionTip = false
+Vue.config.productionTip = false
 router.beforeEach((to,from,next)=>{
    console.log(to);
    console.log(from);
    console.log(next);
    next();
-})*/
+})
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
