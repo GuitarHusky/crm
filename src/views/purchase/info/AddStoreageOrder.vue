@@ -7,14 +7,14 @@
       <Col span="4">
       <Row>
         <Col span="8" style="text-align: center;">单号</Col>
-        <Col span="16">{{odd_number}}</Col>
+        <Col span="16">{{purchaseStoreageObj.odd_number}}</Col>
       </Row>
       </Col>
       <Col span="4">
       <Row>
         <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>业务日期</Col>
         <Col span="16">
-        <DatePicker type="date" placeholder="请输入日期" v-model="exchangedate" :options="options"></DatePicker>
+        <DatePicker type="date" placeholder="请输入日期" v-model="purchaseStoreageObj.exchangedate" :options="options"></DatePicker>
         </Col>
       </Row>
       </Col>
@@ -22,8 +22,8 @@
       <Row>
         <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>供应商</Col>
         <Col span="16">
-        <Select v-model="suppliervalue">
-          <Option v-for="item in supplierlist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="purchaseStoreageObj.suppliervalue">
+          <Option v-for="item in purchaseStoreageObj.supplierlist" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
         </Col>
       </Row>
@@ -34,8 +34,8 @@
       <Row>
         <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>仓库</Col>
         <Col span="16">
-        <Select v-model="stockvalue">
-          <Option v-for="item in allstockslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="purchaseStoreageObj.stockvalue">
+          <Option v-for="item in purchaseStoreageObj.allstockslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
         </Col>
       </Row>
@@ -44,8 +44,8 @@
       <Row>
         <Col span="8" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>业务员</Col>
         <Col span="16">
-        <Select v-model="allusersvalue">
-          <Option v-for="item in alluserslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="purchaseStoreageObj.allusersvalue">
+          <Option v-for="item in purchaseStoreageObj.alluserslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
         </Col>
       </Row>
@@ -54,8 +54,8 @@
       <Row>
         <Col span="6" style="text-align: center;"><span style="color:red;font-size:16px;">*</span>付款方式</Col>
         <Col span="18">
-        <Select v-model="paymentvalue">
-          <Option v-for="item in paymentlist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+        <Select v-model="purchaseStoreageObj.paymentvalue">
+          <Option v-for="item in purchaseStoreageObj.paymentlist" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
         </Col>
       </Row>
@@ -65,7 +65,7 @@
       <Col span="12">
       <Col span="2" style="text-align: center;">备注</Col>
       <Col span="22">
-      <Input v-model="nodetxt"></Input>
+      <Input v-model="purchaseStoreageObj.nodetxt"></Input>
       </Col>
       </Col>
     </Row>
@@ -171,7 +171,7 @@
           <td class="">采购合计：
           </td>
           <td class="">
-            {{totalPrice | filterByNumber}}
+            {{purchaseStoreageObj.totalPrice | filterByNumber}}
           </td>
          <!--  <td class=""></td>
          <td class="">
@@ -184,11 +184,11 @@
         </tr>
       </tbody>
     </table>
-    <Modal v-model="add_orders" width="1000">
+    <Modal v-model="purchaseStoreageObj.add_orders" width="1000">
       <p slot="header" style="color:#2D8CF0;text-align:left">
         <span>选择商品</span>
       </p>
-      <i-table border :columns="goodsTitle" :data="goods_list" height="400" :highlight-row="hrow" @on-row-click="appendTitle"></i-table>
+      <i-table border :columns="purchaseStoreageObj.goodsTitle" :data="purchaseStoreageObj.goods_list" height="400" :highlight-row="purchaseStoreageObj.hrow" @on-row-click="appendTitle"></i-table>
     </Modal>
   </div>
     </div>
@@ -198,11 +198,11 @@
       <Button type="primary" @click="toAdd">保存</Button>
       <Button type="primary" style="margin-left:30px;" @click="escquit">取消</Button>
    </div>
-   <Modal v-model="scanmodal" width="700">
+   <Modal v-model="purchaseStoreageObj.scanmodal" width="700">
       <p slot="header" style="color:#2D8CF0;text-align:left;font-size:20px;">
         <span>扫描商品码</span>
       </p>
-      <input @change="getGoodsInfo" style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="scancode" type="" name="getfoucs" id="getfoucs" value=""  placeholder="请扫描商品码" autofocus/>
+      <input @change="getGoodsInfo" style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="purchaseStoreageObj.scancode" type="" name="getfoucs" id="getfoucs" value=""  placeholder="请扫描商品码" autofocus/>
       <div slot="footer">
       </div>
     </Modal>
@@ -212,6 +212,7 @@
   import myTableHeader from '../myTableHeader'
   import myTableTbody from '../myTableTbody'
   import util from '../../../common/util'
+  import objGroup from '../../../common/target'
   import { getAllUsers,getUser,getAllOrgs,getAllSupplier,getGoods,addStore,getAllStock,getOneGoods,getZsmInfo } from '../../../api/api'
   export default {
     data() {
@@ -221,90 +222,14 @@
                         return date && date.valueOf() > Date.now();
                     }
                 },
-        is_edit: false,
-        exchangedate: '', //交货日期
-        suppliervalue: '', //供应商
-        allusersvalue: '', //业务员
-        paymentvalue: 1, //付款方式
-        nodetxt: '', //备注
-        stockvalue: '',//仓库
-        supplierlist: [],
-        orgslist: [],
-        paymentlist: [
-       /* {
-          value: 0,
-          label: '记应付账款'
-        },*/{
-          value: 1,
-          label: '现金付款'
-        }/*,{
-          value: 2,
-          label: '预付款'
-        },*/
-        ],
-        alluserslist: [],
-        odd_number: '保存后自动生成',
-
-        hrow: true,
-        checkVriable: 0,
-        totalPrice:0,
-        taxalPrice:0,
-        taxtTotalMoney:0,
-        goodsTitle: [{
-            title: '商品编码',
-            key: 'code',
-            align: "center",
-          },
-          {
-            title: '商品',
-            key: 'name',
-            align: "center",
-          },
-          {
-            title: '规格型号',
-            key: 'spec',
-            align: "center",
-          },
-          {
-            title: '单位',
-            align: "center",
-            key: 'unit_name'
-          },
-          {
-            title: '建议采购价',
-            align: "center",
-            key: 'purchase_price'
-          },
-          {
-            title: '备注',
-            align: "center",
-            key: 'memo'
-          }
-        ],
+        purchaseStoreageObj: {},
+        /*商品列表数据*/
         table: {
           lists: []
         },
-        goods_obj:{
-            goods_id: '',
-            code: "",
-            name: "",
-            spec: "",
-            goods_count: 0, //采购数量
-            unit_id: "",
-            goods_price: 0, //采购单价
-            goods_money: 0, //采购总额
-            memo: '', //备注
-        },
-        add_orders: false,
-        goods_list: [],
-        tab_key: 0,
-        taxation:0,
-        allstockslist: [],
-        scanmodal: false,
-        scancode: "",
-        focusState: true,
       }
     },
+    /*过滤数据    保留两位小数*/
     filters:{
       filterByNumber(value){
         return isNaN(value)?'':value.toFixed(2);
@@ -317,29 +242,31 @@
       methods:{
          /*根据扫描得到的码获取商品信息*/
         getGoodsInfo(){
-           var hell = this.scancode.split('，').length
+           var hell = this.purchaseStoreageObj.scancode.split('，').length
         if(hell > 1) {
+          /*根据溯源码获取商品信息*/
           getZsmInfo({
             ticket: sessionStorage.getItem("ticket"),
-            zsm: this.scancode.split('，')[0],
-            pzwh: this.scancode.split('，')[2],
+            zsm: this.purchaseStoreageObj.scancode.split('，')[0],
+            pzwh: this.purchaseStoreageObj.scancode.split('，')[2],
           }).then(res => {
             /*console.log(res)*/
             if(res.retcode == "2001" || !res.data) {
               this.$Message.info("没有该商品，请重新扫描!");
-              this.scancode = "";
+              this.purchaseStoreageObj.scancode = "";
               return;
             }
+            /*判断返回的商品数据量*/
             if(res.data.length>1){
-              this.add_orders = true;
-              this.goods_list = res.data;
-              this.scanmodal = false;
+              this.purchaseStoreageObj.add_orders = true;
+              this.purchaseStoreageObj.goods_list = res.data;
+              this.purchaseStoreageObj.scanmodal = false;
               return;
             }else if(res.data[0]){
               for(var i = 0; i < this.table.lists.length; i++) {
               if(this.table.lists[i].goods_id == res.data[0].id) {
                 this.$Message.info("不可选择重复商品");
-                this.scancode = '';
+                this.purchaseStoreageObj.scancode = '';
                 return;
               }
             }
@@ -349,7 +276,7 @@
             for(var i = 0; i < this.table.lists.length; i++) {
               if(this.table.lists[i].goods_id == res.data.id) {
                 this.$Message.info("不可选择重复商品");
-                this.scancode = '';
+                this.purchaseStoreageObj.scancode = '';
                 return;
               }
             }
@@ -358,16 +285,16 @@
            }else {
              getOneGoods({
                 ticket: sessionStorage.getItem("ticket"),
-                 bar_code: this.scancode
+                 bar_code: this.purchaseStoreageObj.scancode
              }).then(res => {
               if(!res.data){
                 this.$Message.info("没有该商品，请重新扫描!")
-                  this.scancode = ""
+                  this.purchaseStoreageObj.scancode = ""
               }
                for(var i=0;i<this.table.lists.length;i++){
                if(this.table.lists[i].goods_id == res.data.id){
                  this.$Message.info("不可选择重复商品")
-                 this.scancode = ""
+                 this.purchaseStoreageObj.scancode = ""
                  return
                   }
                 }
@@ -375,24 +302,26 @@
              })
            }
         },
+        /*选择商品存到列表中*/
         checkData(obj){
-          this.goods_obj.goods_id = obj.id;
-          this.goods_obj.code = obj.code;
-          this.goods_obj.name = obj.name;
-          this.goods_obj.spec = obj.spec;
-          this.goods_obj.unit_id = obj.unit_name;
-          this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
-          this.scancode = ""
-          this.scanmodal = false;
-          this.tab_key ++
+          this.purchaseStoreageObj.storage_goods_obj.goods_id = obj.id;
+          this.purchaseStoreageObj.storage_goods_obj.code = obj.code;
+          this.purchaseStoreageObj.storage_goods_obj.name = obj.name;
+          this.purchaseStoreageObj.storage_goods_obj.spec = obj.spec;
+          this.purchaseStoreageObj.storage_goods_obj.unit_id = obj.unit_name;
+          this.table.lists[this.tab_key] = util.deepClone(this.storage_goods_obj)
+          this.purchaseStoreageObj.scancode = ""
+          this.purchaseStoreageObj.scanmodal = false;
+          this.purchaseStoreageObj.tab_key ++
         },
         /*显示扫码弹框*/
         showSan(key){
-          this.scanmodal = true
-          this.scancode = ""
-          this.tab_key = key
+          this.purchaseStoreageObj.scanmodal = true
+          this.purchaseStoreageObj.scancode = ""
+          this.purchaseStoreageObj.tab_key = key
           this.getFoucs()
         },
+        /*扫码框获取焦点*/
         getFoucs() {
         setTimeout(function(){document.querySelector('#getfoucs').focus();}, 30);
         },
@@ -406,15 +335,15 @@
             let temp = {}
             temp.value = item.id
             temp.label = item.name
-            this.allstockslist.push(temp)
+            this.purchaseStoreageObj.allstockslist.push(temp)
           })
         })
       },
-        /*取消*/
-        escquit(){
-          window.history.back()
-        },
-        /*获取业务员列表*/
+      /*取消*/
+      escquit(){
+        window.history.back()
+      },
+      /*获取业务员列表*/
       getAllUsersinfo(){
         getUser({
           ticket: sessionStorage.getItem("ticket"),
@@ -423,7 +352,7 @@
             var temp = {}
             temp.value = item.id
             temp.label = item.nickname
-            this.alluserslist.push(temp)
+            this.purchaseStoreageObj.alluserslist.push(temp)
           })
         })
       },
@@ -436,7 +365,7 @@
             var temp = {}
             temp.value = item.id
             temp.label = item.name
-            this.orgslist.push(temp)
+            this.purchaseStoreageObj.orgslist.push(temp)
           })
         })
       },
@@ -450,21 +379,21 @@
             var temp = {}
             temp.value = item.id
             temp.label = item.name
-            this.supplierlist.push(temp)
+            this.purchaseStoreageObj.supplierlist.push(temp)
           })
         })
       },
-
+      /*添加提交*/
       toAdd(){
-        if(this.exchangedate == "" || this.exchangedate == null){
+        if(this.purchaseStoreageObj.exchangedate == "" || this.purchaseStoreageObj.exchangedate == null){
           this.$Message.info("请填写日期")
           return
         }
-        if(this.suppliervalue == "" || this.suppliervalue == null){
+        if(this.purchaseStoreageObj.suppliervalue == "" || this.purchaseStoreageObj.suppliervalue == null){
           this.$Message.info("请选择供应商")
           return
         }
-        if(this.allusersvalue == "" || this.allusersvalue == null){
+        if(this.purchaseStoreageObj.allusersvalue == "" || this.purchaseStoreageObj.allusersvalue == null){
           this.$Message.info("请选择业务员")
           return
         }
@@ -472,7 +401,7 @@
           this.$Message.info("请选择付款方式")
           return
         }*/
-        if(this.stockvalue == "" || this.stockvalue == null){
+        if(this.purchaseStoreageObj.stockvalue == "" || this.purchaseStoreageObj.stockvalue == null){
           this.$Message.info("请选择仓库")
           return
         }
@@ -488,29 +417,29 @@
             return
           }
           }
-        if(this.exchangedate){
-          var time = new Date(this.exchangedate)
+        if(this.purchaseStoreageObj.exchangedate){
+          var time = new Date(this.purchaseStoreageObj.exchangedate)
           var month = (time.getMonth()+1)>=10?(time.getMonth()+1):'0'+(time.getMonth()+1)
           var day = time.getDate()>=10?time.getDate():'0'+time.getDate()
-          this.exchangedate = time.getFullYear() + '-' + month + '-' + day
+          this.purchaseStoreageObj.exchangedate = time.getFullYear() + '-' + month + '-' + day
         }else{
-          this.exchangedate = ""
+          this.purchaseStoreageObj.exchangedate = ""
         }
         this.table.lists.forEach((item, index) => {
           if(item.goods_count == 0){
             this.table.lists = ""
           }
         })
-        this.allusersvalue = Number(this.allusersvalue)
+        this.purchaseStoreageObj.allusersvalue = Number(this.purchaseStoreageObj.allusersvalue)
         addStore({
           ticket: sessionStorage.getItem("ticket"),
           po_id: "",
-          biz_dt: this.exchangedate,
-          supplier_id: this.suppliervalue,
-          warehouse_id: this.stockvalue,
-          biz_user_id: this.allusersvalue,
-          payment_type: this.paymentvalue,
-          bill_memo: this.nodetxt,
+          biz_dt: this.purchaseStoreageObj.exchangedate,
+          supplier_id: this.purchaseStoreageObj.suppliervalue,
+          warehouse_id: this.purchaseStoreageObj.stockvalue,
+          biz_user_id: this.purchaseStoreageObj.allusersvalue,
+          payment_type: this.purchaseStoreageObj.paymentvalue,
+          bill_memo: this.purchaseStoreageObj.nodetxt,
           store_list: this.table.lists
         }).then(res => {
           if(res.retcode == 2000){
@@ -521,17 +450,20 @@
           }
         })
       },
+      /*显示商品列表模态框*/
       showProduct: function(key) {
-        this.tab_key = key;
-        this.add_orders = true;
+        this.purchaseStoreageObj.tab_key = key;
+        this.purchaseStoreageObj.add_orders = true;
         this.getGoodsList();
       },
+      /*删除一行*/
       delInput(key) {
         if(key != 0) {
           this.table.lists.splice(key, 1);
           this.sumTotalPrice(key-1);
         }
       },
+      /*增加一行 */
       addInput: function() {
         this.table.lists.push({
           goods_id: "",
@@ -546,18 +478,20 @@
           money_with_tax: 0, //价税合计*/
         });
       },
+      /*获取商品数据列表*/
       getGoodsList() {
         getGoods({
           ticket: this.$store.state.ticket,
         }).then(res => {
-          console.log(res)
-          this.goods_list = res.data
+          /*console.log(res)*/
+          this.purchaseStoreageObj.goods_list = res.data
           var num = 1
-          this.goods_list.forEach((item, index) => {
+          this.purchaseStoreageObj.goods_list.forEach((item, index) => {
             item.unmid = num++
           })
         })
       },
+      /*将选中商品数据填充到当前行*/
       appendTitle(currentRow) {
         for(var i=0;i<this.table.lists.length;i++){
           if(this.table.lists[i].goods_id == currentRow.id){
@@ -565,23 +499,16 @@
             return
           }
         }
-
-        /*this.table.lists[this.tab_key].goods_id = currentRow.id;
-        this.table.lists[this.tab_key].code = currentRow.code;
-        this.table.lists[this.tab_key].name = currentRow.name;
-        this.table.lists[this.tab_key].spec = currentRow.spec;
-        this.table.lists[this.tab_key].unit_id = currentRow.unit_name;*/
-
-        this.goods_obj.goods_id = currentRow.id;
-        this.goods_obj.code = currentRow.code;
-        this.goods_obj.name = currentRow.name;
-        this.goods_obj.spec = currentRow.spec;
-        this.goods_obj.unit_id = currentRow.unit_name;
-        this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
-        this.add_orders = false;
+        this.purchaseStoreageObj.storage_goods_obj.goods_id = currentRow.id;
+        this.purchaseStoreageObj.storage_goods_obj.code = currentRow.code;
+        this.purchaseStoreageObj.storage_goods_obj.name = currentRow.name;
+        this.purchaseStoreageObj.storage_goods_obj.spec = currentRow.spec;
+        this.purchaseStoreageObj.storage_goods_obj.unit_id = currentRow.unit_name;
+        this.table.lists[this.tab_key] = util.deepClone(this.storage_goods_obj)
+        this.purchaseStoreageObj.add_orders = false;
       },
+      /*计算商品数据合计*/
       sumTotalPrice(key){
-        /*console.log(key)*/
         this.table.lists[key].goods_money =
         parseFloat(this.table.lists[key].goods_count) * parseFloat(this.table.lists[key].goods_price);
        /* this.table.lists[key].tax =
@@ -599,12 +526,15 @@
     },
     mounted(){
       this.$store.state.ticket = sessionStorage.getItem("ticket")
+      this.purchaseStoreageObj = objGroup.purchaseOrderObj
       this.getAllUsersinfo()
       this.getAllOrgsinfo()
       this.getAllSupplierinfo()
       this.getGoodsList()
       this.getAllStocks()
-       this.table.lists[0] = this.goods_obj
+      this.table.lists[0] = this.purchaseStoreageObj.storage_goods_obj
+      this.purchaseStoreageObj.exchangedate = new Date()   /*日期默认值为当前日期*/
+      this.purchaseStoreageObj.allusersvalue = Number(sessionStorage.getItem("user_id"))   /*业务员默认值为当前登录用户*/
     }
   }
 </script>
@@ -619,8 +549,8 @@
     background-color: #fff;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-}
-input::-ms-input-placeholder {
+  }
+  input::-ms-input-placeholder {
     text-align: center;
   }
 

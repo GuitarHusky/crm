@@ -86,7 +86,7 @@
 				<Row style='margin: 10px 0;'>
 					<Col span="3" style="text-align:center;"><span style="color:red;">*</span>分类</Col>
 					<Col span="9" style="text-align:center;">
-					<Select v-model="addsupplierobj.addsuppliercategoryid">
+					<Select v-model="addsupplierobj.addsuppliercategoryid" disabled>
 						<Option v-for="(item,index) in supplierlist" :value="item.value" :key="item.value">{{ item.label }}</Option>
 					</Select>
 					</Col>
@@ -378,6 +378,7 @@
 					})
 				})
 			},
+      /*分页*/
 			changepage(index) {
 				this.suppliername = this.$route.params.name
 				getAllSupplier({
@@ -601,16 +602,15 @@
 					addsupplierTel2: '',  //添加供应商备用联系人固话
 					addsupplierQQ2: '',  //添加供应商备用联系人qq
 					addsupplierFHAddress: '', //添加供应商备用联系人
-					addsupplierBankName: '',
-					addsupplierBankAccount: '',
-					addTaxNumber: '',
-					addFax: '',
-					addTaxRate: '',
-					addInitPayables: '',
-					addInitPayablesDT: '',
+					addsupplierBankName: '',  //开户行
+					addsupplierBankAccount: '',   //开户行账号
+					addTaxNumber: '',  //税号
+					addFax: '',  //传真
+					addTaxRate: '',  //税率
+					addInitPayables: '',  //应付期初余额
+					addInitPayablesDT: '',   //余额日期
 					addNote: '',
 				},
-				edit_supplier: '',
 				model1: '',
 				model2: '',
 				editsupplierobj: {
@@ -637,17 +637,17 @@
 					editInitPayablesDT: '',
 					editNote: '',
 				},
-				selectValue1: '',
+				selectValue1: '',  //供应商分类id
 				selectValue2: '',
-				supplierlist: [],
-				supplierCode: '',
-				supplierName: '',
-				supplierAddress: '',
-				relation: '',
-				tel: '',
-				fixedTel: '',
-				qq: '',
-				suppliername: '',
+				supplierlist: [],   //供应商列表
+				supplierCode: '',  //供应商编码
+				supplierName: '',  //供应商名称
+				supplierAddress: '',   //供应商地址
+				relation: '',  //联系人
+				tel: '',  //手机
+				fixedTel: '',  //固话
+				qq: '',   //qq
+				suppliername: '',  //
 				add_supplier: false,
 				edit_supplier: false,
 				value: '',

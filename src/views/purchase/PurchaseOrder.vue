@@ -211,6 +211,7 @@
           document.getElementById('closeOrderesc').disabled = false*/
         }
       },
+      /*为当前选中行添加样式*/
       rowClassName (row, index) {
           if (index === this.CurrenTableindex) {
               return 'selectedtd';
@@ -221,12 +222,15 @@
       delTrue(){
         this.deletePurchaseOrders()
       },
+      /*删除取消操作*/
       delFalse(){
         this.del_modal = false
       },
+      /*新建采购订单操作*/
 			addOrder(){
         this.$router.push('/d/add-purchase-order')
       },
+      /*生成采购入库单*/
       getPurchaseOrder(){
         if(!this.purchaseorderdata.length){
           this.$Message.info("表格中没有订单可以生成采购入库")
@@ -238,6 +242,7 @@
         }
         this.$router.push('/d/getPurchaseOrder/'+this.currentTableObj.ref)
       },
+      /*编辑采购入库单*/
       editOrder(){
         if(!this.purchaseorderdata.length){
           this.$Message.info("表格中没有订单可以编辑")
@@ -249,6 +254,26 @@
         }
 				this.$router.push('/d/edit-purchase-order/'+this.currentTableObj.ref)
 			},
+      /*判断采购订单状态*/
+      getOrderStatus(obj){
+        if(obj.bill_status == 0){
+          obj['orderstatus'] = '待审核'
+        }else if(obj.bill_status == 1000){
+          obj['orderstatus'] = '已审核'
+        }else if(obj.bill_status == 1001){
+          obj['orderstatus'] = '订单取消'
+        }else if(obj.bill_status == 2000){
+          obj['orderstatus'] = '部分入库'
+        }else if(obj.bill_status == 4001){
+          obj['orderstatus'] = '部分入库-订单关闭'
+        }else if(obj.bill_status == 3000){
+          obj['orderstatus'] = '全部入库'
+        }else if(obj.bill_status == 4002){
+          obj['orderstatus'] = '全部入库-订单关闭'
+        }else if(obj.bill_status == 4000){
+          obj['orderstatus'] = '订单关闭'
+        }
+      },
       /*分页*/
       changepage(index){
         this.purchaseorderdata = []
@@ -286,23 +311,7 @@
         }).then(res => {
           var num = 1
           res.data.forEach((item,index) => {
-            if(item.base_info.bill_status == 0){
-              item.base_info['orderstatus'] = '待审核'
-            }else if(item.base_info.bill_status == 1000){
-              item.base_info['orderstatus'] = '已审核'
-            }else if(item.base_info.bill_status == 1001){
-              item.base_info['orderstatus'] = '订单取消'
-            }else if(item.base_info.bill_status == 2000){
-              item.base_info['orderstatus'] = '部分入库'
-            }else if(item.base_info.bill_status == 4001){
-              item.base_info['orderstatus'] = '部分入库-订单关闭'
-            }else if(item.base_info.bill_status == 3000){
-              item.base_info['orderstatus'] = '全部入库'
-            }else if(item.base_info.bill_status == 4002){
-              item.base_info['orderstatus'] = '全部入库-订单关闭'
-            }else if(item.base_info.bill_status == 4000){
-              item.base_info['orderstatus'] = '订单关闭'
-            }
+            this.getOrderStatus(item.base_info)
             item.base_info['numid'] = num++
             this.purchaseorderdata.push(item.base_info)
             this.dataCount = item.count
@@ -324,23 +333,7 @@
         }).then(res => {
           var num = 1
           res.data.forEach((item,index) => {
-            if(item.base_info.bill_status == 0){
-              item.base_info['orderstatus'] = '待审核'
-            }else if(item.base_info.bill_status == 1000){
-              item.base_info['orderstatus'] = '已审核'
-            }else if(item.base_info.bill_status == 1001){
-              item.base_info['orderstatus'] = '订单取消'
-            }else if(item.base_info.bill_status == 2000){
-              item.base_info['orderstatus'] = '部分入库'
-            }else if(item.base_info.bill_status == 4001){
-              item.base_info['orderstatus'] = '部分入库-订单关闭'
-            }else if(item.base_info.bill_status == 3000){
-              item.base_info['orderstatus'] = '全部入库'
-            }else if(item.base_info.bill_status == 4002){
-              item.base_info['orderstatus'] = '全部入库-订单关闭'
-            }else if(item.base_info.bill_status == 4000){
-              item.base_info['orderstatus'] = '订单关闭'
-            }
+            this.getOrderStatus(item.base_info)
             item.base_info['numid'] = num++
             this.purchaseorderdata.push(item.base_info)
             this.dataCount = item.count
@@ -396,23 +389,7 @@
             }
           var num = 1
           res.data.forEach((item,index) => {
-            if(item.base_info.bill_status == 0){
-              item.base_info['orderstatus'] = '待审核'
-            }else if(item.base_info.bill_status == 1000){
-              item.base_info['orderstatus'] = '已审核'
-            }else if(item.base_info.bill_status == 1001){
-              item.base_info['orderstatus'] = '订单取消'
-            }else if(item.base_info.bill_status == 2000){
-              item.base_info['orderstatus'] = '部分入库'
-            }else if(item.base_info.bill_status == 4001){
-              item.base_info['orderstatus'] = '部分入库-订单关闭'
-            }else if(item.base_info.bill_status == 3000){
-              item.base_info['orderstatus'] = '全部入库'
-            }else if(item.base_info.bill_status == 4002){
-              item.base_info['orderstatus'] = '全部入库-订单关闭'
-            }else if(item.base_info.bill_status == 4000){
-              item.base_info['orderstatus'] = '订单关闭'
-            }
+            this.getOrderStatus(item.base_info)
             item.base_info['numid'] = num++
             this.purchaseorderdata.push(item.base_info)
             this.dataCount = item.count
@@ -614,12 +591,12 @@
           width: 120,
 					key: 'sale_info_name',
            align:"center",
-				}, {
+				}, /*{
           title: '组织机构',
           width: 135,
           key: 'department_info',
            align:"center",
-        }, {
+        },*/ {
           title: '制单人',
           width: 120,
           key: 'input_menu_info',

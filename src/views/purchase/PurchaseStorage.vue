@@ -237,7 +237,7 @@
             this.$Message.success("提交入库成功")
             this.getPurchaseStoreListinfo()
             this.currentTableObj.orderstatus = "已入库"
-            this.buttonStatus()
+            this.buttonStatus(this.currentTableObj)
           }
         })
       },
@@ -296,20 +296,12 @@
       rowClick(currentRow,index){
         this.currentTableObj = currentRow
         this.CurrenTableindex = index
-        if(currentRow.orderstatus == "待入库"){
-          document.getElementById('edit').disabled = false
-          document.getElementById('del').disabled = false
-          document.getElementById('commit').disabled = false
-        }else{
-          document.getElementById('edit').disabled = true
-          document.getElementById('del').disabled = true
-          document.getElementById('commit').disabled = true
-        }
+        this.buttonStatus(currentRow)
       },
 
       /*获取按钮状态*/
-      buttonStatus(){
-         if(this.currentTableObj.orderstatus == "待入库"){
+      buttonStatus(obj){
+         if(obj.orderstatus == "待入库"){
           document.getElementById('edit').disabled = false
           document.getElementById('del').disabled = false
           document.getElementById('commit').disabled = false
@@ -321,6 +313,22 @@
       },
       /*删除采购入库*/
 
+
+      /*获取订单入库状态和付款方式*/
+      getOrderStatusPayment(obj){
+        if(obj.bill_status == 0){
+          obj['orderstatus'] = '待入库'
+        }else if(obj.bill_status == 1000){
+          obj['orderstatus'] = '已入库'
+        }
+        if(obj.payment_type == 0){
+          obj.payment_type = '记应付账款'
+        }else if(obj.payment_type == 1){
+          obj.payment_type = '现金付款'
+        }else if(obj.payment_type == 2){
+          obj.payment_type = '预付款'
+        }
+      },
       /*分页*/
       changepage(index){
         this.stocksdata = []
@@ -331,18 +339,7 @@
         }).then(res => {
           var num = 1
           res.data.forEach((item,index) => {
-            if(item.base_info.bill_status == 0){
-              item.base_info['orderstatus'] = '待入库'
-            }else if(item.base_info.bill_status == 1000){
-              item.base_info['orderstatus'] = '已入库'
-            }
-            if(item.base_info.payment_type == 0){
-              item.base_info.payment_type = '记应付账款'
-            }else if(item.base_info.payment_type == 1){
-              item.base_info.payment_type = '现金付款'
-            }else if(item.base_info.payment_type == 2){
-              item.base_info.payment_type = '预付款'
-            }
+            this.getOrderStatusPayment(item.base_info)
             item.base_info['numid'] = num++
             this.stocksdata.push(item.base_info)
             this.dataCount = item.count
@@ -362,6 +359,7 @@
         this.paymenttypevalue = ''
         this.getPurchaseOrderListinfo()
       },
+      /*查询对应条件订单*/
       search(){
         this.stocksdata = []
         this.dataCount = 0
@@ -370,7 +368,6 @@
         if(this.orderstatusvalue == '500'){
           this.orderstatusvalue = ''
         }
-
          var start = new Date(this.starttime)
         this.starttime = start.getFullYear() + '-' + (start.getMonth() + 1) + '-' + start.getDate()
         var end = new Date(this.endtime)
@@ -396,22 +393,9 @@
               document.getElementById("searchBtn").disabled = false
               return
             }
-
-          /*console.log(res)*/
           var num = 1
           res.data.forEach((item,index) => {
-            if(item.base_info.bill_status == 0){
-              item.base_info['orderstatus'] = '待入库'
-            }else if(item.base_info.bill_status == 1000){
-              item.base_info['orderstatus'] = '已入库'
-            }
-            if(item.base_info.payment_type == 0){
-              item.base_info.payment_type = '记应付账款'
-            }else if(item.base_info.payment_type == 1){
-              item.base_info.payment_type = '现金付款'
-            }else if(item.base_info.payment_type == 2){
-              item.base_info.payment_type = '预付款'
-            }
+            this.getOrderStatusPayment(item.base_info)
             this.dataCount = item.count
             item.base_info['numid'] = num++
             this.stocksdata.push(item.base_info)
@@ -432,6 +416,7 @@
           })
         })
       },
+      /*获取采购入库单列表*/
       getPurchaseStoreListinfo(){
         this.stocksdata = []
         getPurchaseStoreList({
@@ -441,18 +426,7 @@
         }).then(res => {
           var num = 1
           res.data.forEach((item,index) => {
-            if(item.base_info.bill_status == 0){
-              item.base_info['orderstatus'] = '待入库'
-            }else if(item.base_info.bill_status == 1000){
-              item.base_info['orderstatus'] = '已入库'
-            }
-            if(item.base_info.payment_type == 0){
-              item.base_info.payment_type = '记应付账款'
-            }else if(item.base_info.payment_type == 1){
-              item.base_info.payment_type = '现金付款'
-            }else if(item.base_info.payment_type == 2){
-              item.base_info.payment_type = '预付款'
-            }
+            this.getOrderStatusPayment(item.base_info)
             this.dataCount = item.count
             item.base_info['numid'] = num++
             this.stocksdata.push(item.base_info)

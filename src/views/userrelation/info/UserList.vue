@@ -733,28 +733,29 @@
 
         categorySelectValue: this.$route.params.categoryId,
         editpricelist: [],
-        outstocklist: [],
+        outstocklist: [],  //出库仓库
+        /*新增客户*/
         addObj: {
-        addusercode: '',
-        addusername: '',
-        adduseraddress: '',
-        addcontact01: '',
-        addmobile01: '',
-        addtel01: '',
-        addqq01: '',
-        addcontact02: '',
-        addmobile02: '',
-        addtel02: '',
-        addqq02: '',
-        addaddressreceipt01: '',
-        addbankname: '',
-        addbankaccount: '',
-        addtaxnumber: '',
-        addfax: '',
-        addinit_receivables: '',
-        addinit_receivables_dt: '',
-        addsales_warehouse_id: '',
-        addnote: '',
+        addusercode: '', /*编码*/
+        addusername: '', /*客户名称*/
+        adduseraddress: '', /*地址*/
+        addcontact01: '', /*联系人*/
+        addmobile01: '', /*联系人手机*/
+        addtel01: '', /*固话*/
+        addqq01: '', /*qq*/
+        addcontact02: '',   /*备用联系人*/
+        addmobile02: '', /*手机*/
+        addtel02: '', /*固话*/
+        addqq02: '', /*qq*/
+        addaddressreceipt01: '',  /*收货地址*/
+        addbankname: '', /*开户行*/
+        addbankaccount: '', /*开户行账号*/
+        addtaxnumber: '', /*税号*/
+        addfax: '', /*传真*/
+        addinit_receivables: '',  /*应收期初余额*/
+        addinit_receivables_dt: '',  /*余额日期*/
+        addsales_warehouse_id: '', /*销售出库仓库*/
+        addnote: '',  /*备注*/
         },
 
         editObj:{
@@ -1179,6 +1180,7 @@
           })
         })
       },
+      /*分页*/
       changepage(index){
         this.userinfodata = []
         this.ps_id = this.$route.params.ps_id
@@ -1219,6 +1221,7 @@
       closeaddUserState() {
         this.add_user_state = false
       },
+      /*编辑用户*/
       editUserState() {
         if(!this.currentTableObj){
           this.$Message.info('请在表格中选择要编辑的客户项')

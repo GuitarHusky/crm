@@ -279,6 +279,7 @@
             key: 'memo'
           }
         ],
+        /*商品数据列表*/
         table: {
           lists: []
         },
@@ -294,16 +295,17 @@
             memo: '', //备注
         },
         add_orders: false,
-        goods_list: [],
-        tab_key: 0,
+        goods_list: [],  //商品别表数据
+        tab_key: 0,   //当前列表索引
         taxation:0,
-        allstockslist: [],
+        allstockslist: [],  //所有仓库
         tempdata: [],
-        scanmodal: false,
-        scancode: "",
+        scanmodal: false,    //扫码模态框状态
+        scancode: "",   //扫码信息
         focusState: true,
       }
     },
+    /*过滤数据  保留两位小数*/
     filters:{
       filterByNumber(value){
         return isNaN(value)?'':value.toFixed(2);
@@ -318,17 +320,18 @@
         getGoodsInfo(){
            var hell = this.scancode.split('，').length
         if(hell > 1) {
+          /*根据追溯码获取商品信息*/
           getZsmInfo({
             ticket: sessionStorage.getItem("ticket"),
             zsm: this.scancode.split('，')[0],
             pzwh: this.scancode.split('，')[2],
           }).then(res => {
-            /*console.log(res)*/
             if(res.retcode == "2001" || !res.data) {
               this.$Message.info("没有该商品，请重新扫描!");
               this.scancode = "";
               return;
             }
+            /*判断数据返回量   对应处理*/
             if(res.data.length>1){
               this.add_orders = true;
               this.goods_list = res.data;
@@ -355,6 +358,7 @@
             this.checkData(res.data);
           })
            }else {
+            /*根据二维码获取商品信息*/
              getOneGoods({
               ticket: sessionStorage.getItem("ticket"),
                  bar_code: this.scancode
@@ -370,11 +374,13 @@
                  return
                   }
                 }
+                /*保存数据到列表*/
               this.checkData(res.data);
              })
            }
 
         },
+        /*保存数据到列表*/
          checkData(obj){
           this.goods_obj.goods_id = obj.id;
           this.goods_obj.code = obj.code;
@@ -393,6 +399,7 @@
           this.getFoucs()
           this.tab_key = key
         },
+        /*扫码输入框自动获得焦点*/
         getFoucs() {
         setTimeout(function(){document.querySelector('#getfoucs').focus();}, 30);
         },
@@ -518,7 +525,7 @@
           })
         })
       },
-
+      /*保存编辑*/
       toEdit(){
         if(this.exchangedate == "" || this.exchangedate == null){
           this.$Message.info("请填写日期")
@@ -553,7 +560,6 @@
             return
           }
           }
-       /* console.log(this.table.lists)*/
         if(this.exchangedate){
           var time = new Date(this.exchangedate)
           var month = (time.getMonth()+1)>=10?(time.getMonth()+1):'0'+(time.getMonth()+1)
@@ -567,7 +573,6 @@
             this.table.lists = ""
           }
         })
-        /*console.log(this.table.lists)*/
         addStore({
           ticket: sessionStorage.getItem("ticket"),
           po_id: "",
@@ -586,17 +591,20 @@
           }
         })
       },
+      /*展示商品列表*/
       showProduct: function(key) {
         this.tab_key = key;
         this.add_orders = true;
         this.getGoodsList();
       },
+      /*删除一行*/
       delInput(key) {
         if(key != 0) {
           this.table.lists.splice(key, 1);
           this.sumTotalPrice(key-1);
         }
       },
+      /*添加一行*/
       addInput: function() {
         this.table.lists.push({
           goods_id: "",
@@ -608,6 +616,7 @@
           goods_money: 0, //采购总额
         });
       },
+      /*获取商品列表*/
       getGoodsList() {
         getGoods({
           ticket: this.$store.state.ticket,
@@ -620,6 +629,7 @@
           })
         })
       },
+      /*将选中行填充到当前行内*/
       appendTitle(currentRow) {
          for(var i=0;i<this.table.lists.length;i++){
           if(this.table.lists[i].goods_id == currentRow.id){
@@ -636,6 +646,7 @@
         this.table.lists[this.tab_key] = util.deepClone(this.goods_obj)
         this.add_orders = false;
       },
+      /*计算商品数据合计*/
       sumTotalPrice(key){
         /*console.log(key)*/
         this.table.lists[key].goods_money =

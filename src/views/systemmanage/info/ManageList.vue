@@ -255,7 +255,9 @@
 	import { getGoods, addGoodsCategory, editGoodsCategory, delGoodsCategory, addGoods, getGoodsCategory, getGoodsUnit, getGoodsBrand, delUser, getUser, addUser, getOrg, userEdit } from '../../../api/api'
 	export default {
 		mounted() {
-			this.getGoodsList();
+      /*获取用户列表数据*/
+			this.getUsersList();
+
 			getGoodsCategory({
 				ticket: sessionStorage.getItem("ticket"),
 			}).then(res => {
@@ -459,7 +461,7 @@
 				this.edit_goods = false;
 			},
 			//获取用户列表数据,自循环序号
-			getGoodsList() {
+			getUsersList() {
 				getUser({
           ticket: sessionStorage.getItem("ticket"),
         }).then(res => {
@@ -547,7 +549,7 @@
 					if(res.retcode == '2000') {
 						this.$Message.info(res.msg);
 						this.add_goods = false;
-						this.getGoodsList();
+						this.getUsersList();
 						this.user = {}
 					} else {
 						this.$Message.info(res.msg);
@@ -629,7 +631,7 @@
 					if(res.retcode == '2000') {
 						this.$Message.info(res.msg);
 						this.edit_goods = false;
-						this.getGoodsList();
+						this.getUsersList();
 						this.edit_user = {}
 					} else {
 						this.$Message.info(res.msg);
@@ -646,7 +648,7 @@
 				}).then(res => {
 					if(res.retcode == '2000') {
 						this.$Message.info(res.msg);
-						this.getGoodsList();
+						this.getUsersList();
 						this.del_goods = false;
 					} else {
 						this.$Message.info(res.msg);

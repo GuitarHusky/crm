@@ -51,11 +51,12 @@
 	export default {
 		data() {
 			return {
-        stockname: '',
+        stockname: '',  //仓库名
         value: '',
-        code: '',
-        name: '',
-        spec: '',
+        code: '',  //商品编码
+        name: '',  //品名
+        spec: '',  //规格型号
+        /*总账列表*/
 				stockbilllist: [{
 					title: '商品编码',
           width: 100,
@@ -167,6 +168,7 @@
 			}
 		},
     methods:{
+      /*返回*/
       goBack(){
         window.history.back()
       },
@@ -192,6 +194,7 @@
           this.dataCount = res.data.length
         })
       },
+      /*分页*/
       changepage(index){
         getStockBillList({
           ticket: sessionStorage.getItem("ticket"),
@@ -205,6 +208,7 @@
           this.dataCount = res.data.length
         })
       },
+      /*获取总账列表数据*/
       getBillInfo(){
         this.stockname = this.$route.params.name
         getStockBillList({
@@ -215,7 +219,6 @@
           spec: '',
           page: 1,
         }).then(res => {
-          console.log(res)
           this.stockbilldata = res.data
           this.dataCount = res.data.length
         })

@@ -30,10 +30,10 @@
   export default {
     data() {
       return {
-        starttime: '',
-        endtime: '',
-        goods_id: '',
-        warehouse_id: '',
+        starttime: '',   /*业务日期开始*/
+        endtime: '',     /*业务日期结束*/
+        goods_id: '',   /*商品id*/
+        warehouse_id: '',  /*仓库id*/
         stockbilllist: [
         {
           title: '序号',
@@ -126,15 +126,17 @@
           align: "center",
           key: 'ref_number'
         }],
-        stockbilldata: [],
+        stockbilldata: [],  /*库存数据*/
         pageSize: 20,
         dataCount: 0
       }
     },
     methods:{
+      /*返回*/
       goBack(){
         window.history.back()
       },
+      /*查询*/
       search(){
          if(this.starttime == null || this.starttime == ''){
           this.starttime = ''
@@ -180,6 +182,7 @@
           this.stockbilldata = res.data
         })
       },
+      /*分页*/
       changepage(index){
         if(this.starttime == null || this.starttime == ''){
           this.starttime = ''
@@ -207,6 +210,7 @@
           this.stockbilldata = res.data
         })
       },
+      /*获取库存列表详情数据*/
       getBillInfoDetial(){
         this.goods_id = this.$route.params.goods_id
         this.warehouse_id = this.$route.params.warehouse_id

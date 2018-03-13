@@ -2,9 +2,9 @@
   <div class="purchase_order">
     <div class="basic_indicators" style="margin-bottom: 30px;">
       商品分类
-      <Button type="primary" style="margin-left:50px;" @click="addUnit">新增商品分类</Button>
+      <Button type="primary" style="margin-left:50px;" @click="addGoodsCate">新增商品分类</Button>
     </div>
-    <Table stripe :columns="columns5" :data="goods_list"></Table>
+    <Table stripe :columns="goodsListInfo" :data="goods_list"></Table>
     <!--<div class="page_unit">
       <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage" show-elevator></Page>
     </div>-->
@@ -111,7 +111,7 @@
         edit_ji: '', //绑定编辑商品分类值
         edit_id: '', //编辑时传的id
         del_id: '', //删除时传的id
-        columns5: [{
+        goodsListInfo: [{
             title: '序号',
             key: 'unmid',
             align: "center",
@@ -181,7 +181,7 @@
                     click: () => {
                       this.del_id = params.row.id
                       this.del_goods = true;
-                      console.log(this.del_id)
+                      /*console.log(this.del_id)*/
                     }
                   }
                 }, '删除')
@@ -195,19 +195,23 @@
     },
     methods: {
       changepage() {},
+      /*清空表单数据*/
       clearForm(){
         this.add_code = ""
         this.add_name = ""
         this.add_superior = ""
       },
-      addUnit() {
+      /*显示添加商品分类*/
+      addGoodsCate() {
         this.add_goods = true;
         this.clearForm()
       },
+      /*隐藏添加商品分类*/
       closeAddModal() {
         this.add_goods = false;
         this.clearForm()
       },
+      /*关闭编辑模态框*/
       closeEditModal() {
         this.edit_goods = false;
       },
@@ -295,6 +299,7 @@
           }
         })
       },
+      /*删除取消*/
       delFalse() {
         this.del_goods = false;
       }

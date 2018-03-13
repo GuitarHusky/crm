@@ -1,74 +1,5 @@
 <template>
   <div class="purchase_order">
-    <!-- <div class="basic_indicators">
-      查询条件
-    </div>
-    <Row style="margin: 20px 0;">
-      <Col span="5">
-      <Row>
-        <Col span="6" class="from-text">供应商编码</Col>
-        <Col span="18">
-        <Input v-model="supplierCode"></Input>
-        </Col>
-      </Row>
-      </Col>
-      <Col span="5" style="margin-left:20px;">
-      <Row>
-        <Col span="6" class="from-text">供应商名称</Col>
-        <Col span="18">
-        <Input v-model="supplierName"></Input>
-        </Col>
-      </Row>
-      </Col>
-      <Col span="5" style="margin-left:20px;">
-      <Row>
-        <Col span="6" class="from-text">地址</Col>
-        <Col span="18">
-        <Input v-model="supplierAddress"></Input>
-        </Col>
-      </Row>
-      </Col>
-      <Col span="5" style="margin-left:20px;">
-      <Row>
-        <Col span="6" class="from-text">联系人</Col>
-        <Col span="18">
-        <Input v-model="relation"></Input>
-        </Col>
-      </Row>
-      </Col>
-    </Row>
-    <Row>
-      <Col span="5">
-      <Row>
-        <Col span="6" class="from-text">手机</Col>
-        <Col span="18">
-        <Input v-model="tel"></Input>
-        </Col>
-      </Row>
-      </Col>
-      <Col span="5" style="margin-left:20px;">
-      <Row>
-        <Col span="6" class="from-text">固话</Col>
-        <Col span="18">
-        <Input v-model="fixedTel"></Input>
-        </Col>
-      </Row>
-      </Col>
-      <Col span="5" style="margin-left:20px;">
-      <Row>
-        <Col span="6" class="from-text">QQ</Col>
-        <Col span="18">
-        <Input v-model="qq"></Input>
-        </Col>
-      </Row>
-      </Col>
-      <Col span="1" style="text-align: center;margin-left:30px;">
-      <Button type="primary" @click="searchSupplier">查询</Button>
-      </Col>
-      <Col span="1" style="text-align: center;">
-      <Button type="primary">重置</Button>
-      </Col>
-    </Row> -->
     <div class="basic_indicators" style="margin-bottom: 30px;">
       供应商分类
       <Button type="primary" style="margin-left:50px;" @click="addSupplier">新增供应商分类</Button>
@@ -231,6 +162,7 @@
         })
       },
       changepage(){},
+      /*显示添加供应商模态框*/
       addSupplier(){
         this.add_supplier=true;
         this.addcategoryCode = ""

@@ -363,6 +363,7 @@
 				search_name: '', //查询时传的name
 				search_spec: '', //查询时传的型号
 				search_number: '', //查询时传的条形码
+        /*商品列表*/
 				goods_info: [{
 						title: '序号',
 						align: "center",
@@ -447,7 +448,7 @@
 									},
 									on: {
 										click: () => {
-                     /* console.log(params.row)*/
+                      /*编辑赋值*/
 											this.edit_goods = true;
 											this.curr_good_id = params.row.id
 											this.goods.category_id = params.row.category_id

@@ -96,14 +96,15 @@
     },
     data() {
       return {
-        addpricelist: [],
-        addprice: '',
+        addpricelist: [],   //价格体系列表
+        addprice: '',   //价格体系值
         editpricelist: [],
         editprice: '',
-        add_user_state: false,
+        add_user_state: false,   //模态框状态
         edit_user_state: false,
         cityList: [],
         categoryID: sessionStorage.getItem("ticket"),
+        /*客户分类列表*/
         userslist: [{
           title: '类别编码',
           align: "center",
@@ -145,17 +146,17 @@
             ]);
           }
         }],
-        usersdata: [],
+        usersdata: [], //客户分类数据
         pageSize: 20,
         dataCount: 0,
-        addusercode: '',
-        addcategoryname: '',
-        addprice: '',
+        addusercode: '',   /*用户编码*/
+        addcategoryname: '',  /*分类名称*/
+        addprice: '',  /*价格体系*/
         editusercode: '',
         editcategoryname: '',
         editprice: '',
-        currentTableObj: '',
-        CurrenTableindex: '',
+        currentTableObj: '',  /*当前行*/
+        CurrenTableindex: '',  /*当前行索引*/
         del_modal: false,
       }
     },
@@ -168,12 +169,14 @@
         this.editcategoryname = this.currentTableObj.name
         this.editprice = this.currentTableObj.ps_id
       },
+      /*为选中行添加样式*/
       rowClassName (row, index) {
           if (index === this.CurrenTableindex) {
               return 'selectedtd';
           }
           return '';
       },
+      /*分页*/
       changepage(index){
          getAllUserList({
           loginUserId: sessionStorage.getItem("ticket"),
@@ -296,6 +299,7 @@
       closeaddModal(){
         this.add_user_state=false;
       },
+      /*编辑客户分类*/
       editUserState() {
         if(!this.currentTableObj){
           this.$Message.info("请在表格中选择要编辑的客户分类项")
@@ -306,6 +310,7 @@
       closeeditModal(){
         this.edit_user_state = false;
       },
+      /*删除客户分类*/
       delUserState() {
         if(!this.currentTableObj){
           this.$Message.info("请在表格中选择要删除的客户分类项")

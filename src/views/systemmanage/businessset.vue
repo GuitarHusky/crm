@@ -16,7 +16,7 @@
 			</Row>
 			</Col>
 		</Row>
-		<Table stripe :columns="columns5" :data="config_list"></Table>
+		<Table stripe :columns="configListInfo" :data="config_list"></Table>
 		<!--<div class="page_unit">
 			<Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage" show-elevator></Page>
 		</div>-->
@@ -239,7 +239,7 @@
     data() {
       return {
         business_set: false,
-        columns5: [{
+        configListInfo: [{
             title: '序号',
             align: "center",
             width: 60,

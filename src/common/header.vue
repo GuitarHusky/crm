@@ -31,21 +31,21 @@
 				}, {
 					to: '/userdata',
 					text: '采购',
-          status: 0,
+          status: 1,
 					icon: 'ios-filing-outline',
 					join:'/d/',
 					state: ''
 				}, {
 					to: '/stock',
 					text: '库存',
-          status: 0,
+          status: 1,
 					icon: 'ios-box-outline',
           join: '/s/',
 					state: ''
 				}, {
 					to: '/sale',
 					text: '销售',
-          status: 0,
+          status: 1,
 					icon: 'ios-cart-outline',
           join: '/x/',
 					state: ''

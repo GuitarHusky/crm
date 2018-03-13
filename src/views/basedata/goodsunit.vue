@@ -4,7 +4,7 @@
       商品计量单位
       <Button type="primary" style="margin-left:50px;" @click="addUnit">新增计量单位</Button>
     </div>
-    <Table stripe :columns="columns5" :data="unit_list"></Table>
+    <Table stripe :columns="unitlistinfo" :data="unit_list"></Table>
     <!--<div class="page_unit">
       <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage" show-elevator></Page>
     </div>-->
@@ -74,7 +74,7 @@
         del_id:'',//删除时传的id
         model1: true,
         value: "",
-        columns5: [{
+        unitlistinfo: [{
             title: '序号',
             key: 'unmid',
             align: "center",

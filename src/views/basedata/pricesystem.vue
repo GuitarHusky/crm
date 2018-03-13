@@ -83,8 +83,8 @@
         del_modal: false,
         model1: true,
         value: "",
-        addFactor: '',
-        addPricename: '',
+        addFactor: '',   //销售基准倍数
+        addPricename: '',  //价格名称
         editId: '',
         editFactor: '',
         editPricename: '',
@@ -162,6 +162,7 @@
       delFalse(){
         this.del_modal = false
       },
+      /*获取价格体系列表*/
       getPriceSystemList(){
         PriceSystemListinfo({
           ticket:this.$store.state.ticket,
@@ -237,6 +238,7 @@
         })
       },
       changepage() {},
+      /*显示添加价格模态框*/
       addPrice(){
         this.add_price=true;
         this.addPricename = ""

@@ -3,7 +3,7 @@
 		<div class="basic_indicators" style="margin-bottom: 30px;">
 			业务日志
 		</div>
-		<Table stripe :columns="columns5" :data="log_list"></Table>
+		<Table stripe :columns="logListInfo" :data="log_list"></Table>
 		<div class="page_unit">
 			<Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage" show-elevator></Page>
 		</div>
@@ -18,7 +18,7 @@
 				model1: true,
 				value: "",
 				cityList: "",
-				columns5: [{
+				logListInfo: [{
 						title: '序号',
             align: "center",
             key: 'numid',
@@ -60,6 +60,7 @@
 			}
 		},
 		methods: {
+      /*分页*/
 			changepage(index) {
 				this.log_list=[]
 				getBizLog({
@@ -77,6 +78,7 @@
 			},
 		},
 		mounted() {
+      /*获取业务日志列表*/
 			getBizLog({
         ticket: sessionStorage.getItem("ticket"),
 				id: sessionStorage.getItem('uid'),

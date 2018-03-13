@@ -83,10 +83,10 @@
     },
     data() {
       return {
-        add_brand: false,
-        del_modal: false,
-        delId: '',
-        edit_brand: false,
+        add_brand: false,   //添加商品品牌模态框状态
+        del_modal: false,   //删除商品品牌模态框状态
+        delId: '',//删除id
+        edit_brand: false,   //编辑品牌模态框状态
         model1: '',
         model2: '',
         addName: '',
@@ -174,10 +174,11 @@
           }
         })
       },
+      /*删除取消*/
       delFalse(){
         this.del_modal = false
       },
-      /*添加*/
+      /*添加品牌*/
       addBrands(){
         if(this.addName == ""){
           this.$Message.info("请填写完整信息")
@@ -287,14 +288,18 @@
         })
       },
       changepage() {},
+
+      /*显示添加品牌模态框*/
       addBrand(){
         this.add_brand = true;
         this.addName = ""
         this.model1 = ""
       },
+      /*隐藏添加品牌模态框*/
       closeAddModal(){
         this.add_brand = false;
       },
+      /*隐藏编辑品牌模态框*/
       closeEditModal(){
         this.edit_brand = false;
       }

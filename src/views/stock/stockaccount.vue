@@ -39,46 +39,9 @@
     仓库
   </div>
   <Table stripe :columns="allstockslist" :data="allstocksdata"></Table>
-  <div class="page_unit">
+  <!-- <div class="page_unit">
     <Page :total="dataCount" :page-size="pageSize" show-total class="paging" @on-change="changepage" show-elevator></Page>
-  </div>
-
-
-<!-- <table border="1" style="width:100%;">
-<caption>Table caption here这是一段文字</caption>
-<colgroup span="1" style="background:#DEDEDE;"/>
-<colgroup span="2" style="background:#EFEFEF;"/>
-
-<thead>
-<tr>
-<th>Head 1</th>
-<th>Head 2</th>
-<th>Head 3</th>
-</tr>
-</thead>
-
-<tfoot>
-<tr>
-<td style="text-align:center;">Foot 1</td>
-<td style="text-align:center;">Foot 2</td>
-<td style="text-align:center;">Foot 3</td>
-</tr>
-</tfoot>
-
-<tbody>
-<tr>
-<td style="text-align:center;">A</td>
-<td style="text-align:center;">B</td>
-<td style="text-align:center;">C</td>
-</tr>
-<tr>
-<td style="text-align:center;">D</td>
-<td style="text-align:center;">E</td>
-<td style="text-align:center;">F</td>
-</tr>
-</tbody>
-</table>
-<Button type="primary" style="margin-left:30px;margin-top:50px;" @click="createPdf">打印</Button> -->
+  </div> -->
   </div>
 </template>
 
@@ -89,6 +52,7 @@
       return {
         dataCount:"",
         value: "",
+        /*仓库列表表格*/
         allstockslist: [{
             title: '序号',
             align: "center",
@@ -125,20 +89,23 @@
           }
         }
         ],
+        /*仓库列表数据*/
         allstocksdata: [],
         pageSize: 10,
-        dataCount: 100
+        dataCount: 0
       }
     },
     methods:{
-      createPdf(){
+      /*打印*/
+     /* createPdf(){
           let newWindow = window.open("_blank");   //打开新窗口
           let codestr = document.getElementsByClassName("purchase_order")[0].innerHTML;   //获取需要生成pdf页面的div代码
             newWindow.document.write(codestr);   //向文档写入HTML表达式或者JavaScript代码
             newWindow.document.close();     //关闭document的输出流, 显示选定的数据
             newWindow.print();   //打印当前窗口
             return true;
-        },
+        },*/
+        /*获取所有仓库*/
       getAllStocks(){
         getAllStock({
           ticket: sessionStorage.getItem("ticket"),
@@ -152,6 +119,7 @@
           this.dataCount = res.data.length
         })
       },
+      /*分页*/
       changepage(index){
         getAllStock({
           ticket: sessionStorage.getItem("ticket"),

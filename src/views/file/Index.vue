@@ -67,6 +67,7 @@
 	export default {
 		data() {
 			return {
+        /*销售看板*/
 				saleList: [{
 					title: '月份',
 					align: "center",
@@ -86,6 +87,7 @@
 				}],
 				saleData: [],
 
+        /*库存看板*/
 				inventoryList: [{
 					title: '仓库',
 					align: "center",
@@ -105,6 +107,7 @@
 				}],
 				inventoryData: [],
 
+        /*采购看板*/
 				purchaseList: [{
 					title: '月份',
 					align: "center",
@@ -160,6 +163,7 @@
 
 		mounted() {
       this.$store.state.ticket = sessionStorage.getItem("ticket")
+      /*销售看板*/
 			salePortal({
         ticket: sessionStorage.getItem("ticket"),
       }).then(res => {
@@ -169,6 +173,7 @@
         }
 				this.sale_total=this.saleData[0].profit
 			})
+      /*库存看板*/
 			inventoryPortal({
         ticket: sessionStorage.getItem("ticket"),
       }).then(res => {
@@ -178,6 +183,7 @@
         }
 				this.inventoryMoney = this.inventoryData[0].inventoryMoney
 			})
+      /*采购看板*/
 			purchasePortal({
         ticket: sessionStorage.getItem("ticket"),
       }).then(res => {
@@ -187,6 +193,7 @@
         }
 				this.purchaseMoney = this.purchaseData[0].purchaseMoney
 			})
+      /*资金看板*/
 			moneyPortal({
 				ticket: this.$store.state.ticket
 			}).then(res => {

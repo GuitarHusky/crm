@@ -3,7 +3,7 @@
 		<div class="basic_indicators" style="margin-bottom: 30px;">
 			仓库
 			<Button type="primary" style="margin-left:50px;" @click="addStock">新增仓库</Button>
-			<Button type="primary" style="margin-left:30px;" @click="toaccount">打开库存建账模块</Button>
+			<!-- <Button type="primary" style="margin-left:30px;" @click="toaccount">打开库存建账模块</Button> -->
 		</div>
 		<Table stripe :columns="stockdata" :data="stocklist"></Table>
 		<!--<div class="page_unit">
@@ -85,7 +85,7 @@
 				<Row style='margin: 10px 0;'>
 					<Col span="6" style="text-align:center;">新数据域</Col>
 					<Col span="18">
-					<Select v-model="model1" @on-change="getOption1">
+					<Select v-model="newDataOrg" @on-change="getOption1">
           <Option v-for="item in alldataorgs" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
 					</Col>
@@ -121,19 +121,19 @@
       return {
         add_stock: false,
         edit_stock: false,
-        revise_data: false,
+        revise_data: false,  //修改数据域模态框
         del_modal: false,
-        addStockName: '',
-        addStockCode: '',
+        addStockName: '',  //仓库名称
+        addStockCode: '',  //仓库编码
         editStockName: '',
         editStockCode: '',
         editStockId: '',
         deleteStockId: '',
-        dataorgCode: '',
-        dataorgName: '',
-        dataorg: '',
+        dataorgCode: '',  //修改数据域时仓库编码
+        dataorgName: '',  //修改数据域时仓库名称
+        dataorg: '',  //数据域
         alldataorgs: [],
-        model1: '',
+        newDataOrg: '',
         value: "",
         cityList: "",
         stockoptions: [],
@@ -352,6 +352,7 @@
         })
       },
       changepage() {},
+      /*  显示添加仓库模态框  */
       addStock() {
         this.add_stock = true;
         this.addStockCode = ""

@@ -85,7 +85,9 @@
 					  	sessionStorage.setItem('is_admin', res.data.is_admin)
               sessionStorage.setItem('user_id', res.data.id)
 							this.ticket = sessionStorage.getItem('ticket')
-							} else {
+							}else if(res.retcode == "3002"){
+                this.$Message.info(res.msg);
+              } else {
 								this.$Message.error('用户名或者密码错误');
 								}
 							})
