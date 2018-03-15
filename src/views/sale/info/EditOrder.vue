@@ -7,14 +7,14 @@
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;">单号</Col>
-				<Col span="16">{{odd_number}}</Col>
+				<Col span="16">{{saleOrderObj.odd_number}}</Col>
 			</Row>
 			</Col>
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 销售日期</Col>
 				<Col span="16">
-				<DatePicker type="date" placeholder="请输入日期" v-model='dealDate'></DatePicker>
+				<DatePicker type="date" placeholder="请输入日期" v-model='saleOrderObj.dealDate'></DatePicker>
 				</Col>
 			</Row>
 			</Col>
@@ -22,8 +22,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 客户</Col>
 				<Col span="16">
-				<Select v-model="customerId">
-					<Option v-for="(item,index) in customerslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+				<Select v-model="saleOrderObj.customerId">
+					<Option v-for="(item,index) in saleOrderObj.customerslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -32,7 +32,7 @@
 			<Row>
 				<Col span="8" style="text-align: center;">销售地址</Col>
 				<Col span="16">
-				<Input v-model="dealAddress"></Input>
+				<Input v-model="saleOrderObj.dealAddress"></Input>
 				</Col>
 			</Row>
 			</Col>
@@ -40,7 +40,7 @@
 			<Row>
 				<Col span="6" style="text-align: center;">联系人</Col>
 				<Col span="18">
-				<Input v-model="contact"></Input>
+				<Input v-model="saleOrderObj.contact"></Input>
 				</Col>
 			</Row>
 			</Col>
@@ -50,7 +50,7 @@
 			<Row>
 				<Col span="8" style="text-align: center;">电话</Col>
 				<Col span="16">
-				<Input v-model="tel"></Input>
+				<Input v-model="saleOrderObj.tel"></Input>
 				</Col>
 			</Row>
 			</Col>
@@ -58,16 +58,26 @@
 			<Row>
 				<Col span="8" style="text-align: center;">传真</Col>
 				<Col span="16">
-				<Input v-model="fax"></Input>
+				<Input v-model="saleOrderObj.fax"></Input>
 				</Col>
 			</Row>
 			</Col>
+			<!-- <Col span="4">
+      <Row>
+        <Col span="8" style="text-align: center;"><span style="color: red;">*</span> 组织机构</Col>
+        <Col span="16">
+        <Select v-model='orgId'>
+          <Option v-for="(item,index) in orgslist" :value="item.value" :key="item.value">{{item.label}}</Option>
+        </Select>
+        </Col>
+      </Row>
+      </Col> -->
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 销售员</Col>
 				<Col span="16">
-				<Select v-model='bizUserId'>
-					<Option v-for="(item,index) in alluserslist" :value="item.value" :key="item.value">{{item.label}}</Option>
+				<Select v-model='saleOrderObj.bizUserId'>
+					<Option v-for="(item,index) in saleOrderObj.alluserslist" :value="item.value" :key="item.value">{{item.label}}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -76,8 +86,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;">收款方式</Col>
 				<Col span="16">
-				<Select v-model='receivingType'>
-					<Option v-for="(item,index) in paymentlist" :value="item.value" :key="item.value">{{item.label}}</Option>
+				<Select v-model='saleOrderObj.receivingType'>
+					<Option v-for="(item,index) in saleOrderObj.paymentlist" :value="item.value" :key="item.value">{{item.label}}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -87,7 +97,7 @@
 			<Col span="16">
 			<Col span="2" style="text-align: center;">备注</Col>
 			<Col span="22">
-			<Input v-model="billMemo"></Input>
+			<Input v-model="saleOrderObj.billMemo"></Input>
 			</Col>
 			</Col>
 		</Row>
@@ -162,6 +172,21 @@
 										<span>剩余库存</span>
 									</div>
 								</th>
+								<!-- <th class="">
+                  <div class="ivu-table-cell">
+                    <span>税率(%)</span>
+                  </div>
+                </th>
+                <th class="">
+                  <div class="ivu-table-cell">
+                    <span>税金</span>
+                  </div>
+                </th>
+                <th class="">
+                  <div class="ivu-table-cell">
+                    <span>价税合计</span>
+                  </div>
+                </th> -->
 								<th class="">
 									<div class="ivu-table-cell">
 										<span>备注</span>
@@ -210,13 +235,20 @@
 									<!--是否赠品-->
 									<td class="">
 										<Select v-model="list.isGiveaway" @on-change="sumTotalPrice(key)">
-											<Option v-for="item in giveawaySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+											<Option v-for="item in saleOrderObj.giveawaySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 										</Select>
 									</td>
 									<!--剩余库存-->
 									<td class="">
 										{{list.surplusInventory}}
 									</td>
+									<!-- <td class="">17%</td>
+                  <td class="">
+                    {{list.tax|filterByNumber}}
+                  </td>
+                  <td class="">
+                    {{list.moneyWithTax|filterByNumber}}
+                  </td> -->
 									<td class="">
 										<Input placeholder="备注" class='modea_input' v-model="list.memo"></Input>
 									</td>
@@ -240,7 +272,7 @@
 									<td class="">销售金额合计：
 									</td>
 									<td class="">
-										{{totalPrice | filterByNumber}}
+										{{saleOrderObj.totalPrice | filterByNumber}}
 									</td>
 									<!--折扣-->
 									<td>
@@ -248,7 +280,7 @@
 									</td>
 									<!--结算价格-->
 									<td>
-										{{accountPriceTotal | filterByNumber}}
+										{{saleOrderObj.accountPriceTotal | filterByNumber}}
 									</td>
 									<!--是否赠品-->
 									<td>
@@ -256,13 +288,18 @@
 									</td>
 									<!--剩余库存-->
 									<td>
-										<Input placeholder="抹零" class='modea_input' @on-keyup="getReviceableMoney" v-model="removeZero"></Input>
+										<Input placeholder="抹零" class='modea_input' @on-keyup="getReviceableMoney" v-model="saleOrderObj.removeZero"></Input>
 									</td>
+									<!-- <td class=""></td>
+                  <td class="">
+                    {{taxalPrice | filterByNumber}}
+                  </td>
+                  <td class="">{{taxtTotalMoney| filterByNumber}}</td> -->
 									<td class="">
 										应收账款：
 									</td>
 									<td class="">
-										{{receivableMoney | filterByNumber}}
+										{{saleOrderObj.receivableMoney | filterByNumber}}
 									</td>
 								</tr>
 							</tbody>
@@ -271,15 +308,15 @@
 							<p slot="header" style="color:#2D8CF0;text-align:left">
 								<span>选择商品</span>
 							</p>
-							<i-table border :columns="goodsTitle" :data="goods_list" height="400" :highlight-row="hrow" @on-row-click="appendTitle"></i-table>
+							<i-table border :columns="saleOrderObj.goodsTitle" :data="saleOrderObj.goods_list" height="400" :highlight-row="saleOrderObj.hrow" @on-row-click="appendTitle"></i-table>
 						</Modal>
-						<Modal v-model="scanmodal" width="700">
+						<Modal v-model="saleOrderObj.scanmodal" width="700">
 							<p slot="header" style="color:#2D8CF0;text-align:left;font-size:20px;">
 								<span>扫描商品码</span>
 							</p>
 							<div slot="footer">
 							</div>
-							<input @change='chooseGoods' style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="scancode" type="" name="getfoucs" id="getfoucs" value="" placeholder="请扫描商品码" autofocus />
+							<input @change='chooseGoods' style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="saleOrderObj.scancode" type="" name="getfoucs" id="getfoucs" value="" placeholder="请扫描商品码" autofocus />
 						</Modal>
 					</div>
 				</div>
@@ -294,115 +331,28 @@
 
 <script>
 	import { getGoods, allCustomer, getAllOrgs, getAllUsers, getUser, addSOBill, soBillInfo, getOneGoods, getZsmInfo } from '../../../api/api'
-	import util from '../../../common/util.js'
+  import util from '../../../common/util.js'
+	import objGroup from '../../../common/target'
 	export default {
 		mounted() {
 			this.$store.state.ticket = sessionStorage.getItem("ticket")
-			this.getGoodsList();
-			this.getAllCustomers();
-			this.getAllOrgsinfo();
-			this.getAllUsersinfo();
+      this.saleOrderObj = util.deepClone(objGroup.saleOrderObj)
+      this.saleOrderObj.bizUserId = parseInt(sessionStorage.getItem("user_id"))
+      var datenow = new Date()
+      this.saleOrderObj.dealDate = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
 			this.getEditOrderData();
+      this.getGoodsList()
+      this.getAllUsersinfo()
+      this.getAllOrgsinfo()
+      this.getAllCustomers()
 		},
 		data() {
 			return {
-				odd_number: '保存后自动添加',
-				hrow: true,
-				checkVriable: 0,
-				totalPrice: 0,
-				taxalPrice: 0,
-				taxtTotalMoney: 0,
-				accountPriceTotal: 0, //结算价格合计
-				removeZero: 0, //抹零
-				receivableMoney: 0, //应收账款
-				goodsTitle: [{
-						title: '商品编码',
-						key: 'code',
-						align: "center",
-					},
-					{
-						title: '商品',
-						key: 'name',
-						align: "center",
-					},
-					{
-						title: '规格型号',
-						key: 'spec',
-						align: "center",
-					},
-					{
-						title: '单位',
-						align: "center",
-						key: 'unit_name'
-					},
-					{
-						title: '建议采购价',
-						align: "center",
-						key: 'goodsPrice'
-					},
-					{
-						title: '备注',
-						align: "center",
-						key: 'memo'
-					}
-				],
 				table: {
 					lists: []
 				},
-				sale_obj: {
-					goodsId: '',
-					goodsCode: '',
-					goodsName: "",
-					goodsSpec: "",
-					goodsCount: 0, //采购数量
-					unitName: "",
-					goodsPrice: 0, //采购单价
-					goodsMoney: 0, //采购总额
-					discount: "0.00", //折扣
-					accountPrice: 0, //结算价格
-					isGiveaway: 0, //是否赠品
-					surplusInventory: 0, //剩余库存
-
-					taxRate: 0.17, //税率
-					tax: 0, //税金
-					moneyWithTax: 0, //价税合计
-					memo: '', //描述
-				},
+        saleOrderObj: {},
 				add_orders: false,
-				goods_list: [],
-				tab_key: 0,
-				tax: 0,
-				customerslist: [], //客户列表
-
-				dealDate: '', //绑定的业务时间
-				customerId: '', //绑定客户id
-				dealAddress: '', //交货的地址
-				contact: '', //联系人
-				tel: '', //电话
-				fax: '', //传真
-				orgId: '', //组织机构id
-				bizUserId: "", //业务员id
-				receivingType: '', //付款传的的id
-				billMemo: "", //备注
-				saleNumList: [],
-
-				orgslist: [], //组织机构列表
-				alluserslist: [], //业务员列表
-				paymentlist: [{
-					value: 1,
-					label: '现金付款'
-				}],
-				scanmodal: false,
-				scancode: "",
-				giveawaySelectList: [{
-						value: 0,
-						label: "否",
-					},
-					{
-						value: 1,
-						label: "是",
-					}
-				],
 			}
 		},
 		filters: {
@@ -411,97 +361,147 @@
 			}
 		},
 		methods: {
+      /*获取商品列表*/
+      getGoodsList(){
+        getGoods({
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
+          this.saleOrderObj.goods_list = res.data
+          var num = 1
+          this.saleOrderObj.goods_list.forEach((item, index) => {
+            item.unmid = num++
+          })
+        })
+      },
+       /*获取业务员列表*/
+      getAllUsersinfo(){
+        getUser({
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
+          res.data.forEach((item,index) => {
+            var temp = {}
+            temp.value = item.id
+            temp.label = item.nickname
+            this.saleOrderObj.alluserslist.push(temp)
+          })
+        })
+      },
+      /*获取组织机构列表*/
+      getAllOrgsinfo(){
+        getAllOrgs({
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
+          res.data.forEach((item,index) => {
+            var temp = {}
+            temp.value = item.id
+            temp.label = item.name
+            this.saleOrderObj.orgslist.push(temp)
+          })
+        })
+      },
+      /*获取客户数据*/
+      getAllCustomers() {
+        allCustomer({
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
+          res.data.forEach((item, index) => {
+            var temp = {}
+            temp.label = item.name
+            temp.value = item.id
+            this.saleOrderObj.customerslist.push(temp)
+          })
+        })
+      },
 			//点击取消按钮
 			escquit() {
 				window.history.back()
 			},
 			//点击扫码入库
 			showSan(key) {
-				this.scanmodal = true;
-				this.scancode = ""
+				this.saleOrderObj.scanmodal = true;
+        this.saleOrderObj.scancode = ""
 				this.getFoucs();
-				this.tab_key = key
+				this.saleOrderObj.tab_key = key
 			},
 			//点击扫码入库时弹出扫码入库模态框,点击模态框的确定事件
 			chooseGoods() {
-				var hell = this.scancode.split('，').length
-				if(hell > 1) {
-					getZsmInfo({
-						ticket: sessionStorage.getItem("ticket"),
-						zsm: this.scancode.split('，')[0],
-						pzwh: this.scancode.split('，')[2],
-					}).then(res => {
-						if(res.retcode == "2001" || !res.data) {
-							this.$Message.info("没有该商品，请重新扫描!");
-							this.scancode = "";
-							return;
-						}
-						if(res.data.length > 1) {
-							this.add_orders = true;
-							this.goods_list = res.data;
-							this.scanmodal = false;
-							return;
-						} else if(res.data[0]) {
-							for(var i = 0; i < this.table.lists.length; i++) {
-								if(this.table.lists[i].goodsId == res.data[0].id) {
-									this.$Message.info("不可选择重复商品");
-									this.scancode = '';
-									return;
-								}
-							}
-							this.checkData(res.data[0]);
-							return
-						}
-						for(var i = 0; i < this.table.lists.length; i++) {
-							if(this.table.lists[i].goodsId == res.data.id) {
-								this.$Message.info("不可选择重复商品");
-								this.scancode = '';
-								return;
-							}
-						}
-						this.checkData(res.data);
-						this.tab_key++;
-						this.scancode = '';
-						this.scanmodal = false;
-					})
+				var hell = this.saleOrderObj.scancode.split('，').length
+        if(hell > 1) {
+          getZsmInfo({
+            ticket: sessionStorage.getItem("ticket"),
+            zsm: this.saleOrderObj.scancode.split('，')[0],
+            pzwh: this.saleOrderObj.scancode.split('，')[2],
+          }).then(res => {
+            /*console.log(res)*/
+            if(res.retcode == "2001" || !res.data) {
+              this.$Message.info("没有该商品，请重新扫描!");
+              this.saleOrderObj.scancode = "";
+              return;
+            }
+            if(res.data.length>1){
+              this.add_orders = true;
+              this.saleOrderObj.goods_list = res.data;
+              this.saleOrderObj.scanmodal = false;
+              return;
+            }else if(res.data[0]){
+              for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goodsId == res.data[0].id) {
+                this.$Message.info("不可选择重复商品");
+                this.saleOrderObj.scancode = '';
+                return;
+              }
+            }
+              this.checkData(res.data[0]);
+              return
+            }
+            for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goodsId == res.data.id) {
+                this.$Message.info("不可选择重复商品");
+                this.saleOrderObj.scancode = '';
+                return;
+              }
+            }
+            this.checkData(res.data);
+          })
 				} else {
 					getOneGoods({
-						ticket: sessionStorage.getItem("ticket"),
-						bar_code: this.scancode
+            ticket: sessionStorage.getItem("ticket"),
+						bar_code: this.saleOrderObj.scancode
 					}).then(res => {
-						if(!res.data) {
-							this.$Message.info("没有该商品，请重新扫描!")
-							this.scancode = ""
-						}
+            if(!res.data) {
+                this.$Message.info("没有该商品，请重新扫描!")
+                this.saleOrderObj.scancode = ""
+                return
+              }
 						for(var i = 0; i < this.table.lists.length; i++) {
 							if(this.table.lists[i].goodsId == res.data.id) {
 								this.$Message.info("不可选择重复商品")
-								this.scancode = ''
+								this.saleOrderObj.scancode = ''
 								return
 							}
 						}
 						this.checkData(res.data)
-						this.tab_key++;
-						this.scancode = '';
-						this.scanmodal = false;
 					})
 				}
 			},
-			checkData(obj) {
-				this.sale_obj.goodsName = obj.name;
-				this.sale_obj.goodsSpec = obj.spec;
-				this.sale_obj.unitName = obj.unit_name;
-				this.sale_obj.goodsCode = obj.code;
-				this.sale_obj.goodsId = obj.id
-				this.sale_obj.goodsPrice = obj.sale_price
-				this.sale_obj.discount = "0.00"
-				this.sale_obj.accountPrice = 0
-				this.sale_obj.isGiveaway = 0
-				this.sale_obj.surplusInventory = parseInt(obj.goods_balance_count)
-				this.saleNumList[this.tab_key] = util.deepClone(this.sale_obj.surplusInventory)
-				this.sale_obj.memo = obj.memo
-				this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
-			},
+      checkData(obj){
+        this.saleOrderObj.sale_obj.goodsName = obj.name;
+        this.saleOrderObj.sale_obj.goodsSpec = obj.spec;
+        this.saleOrderObj.sale_obj.unitName = obj.unit_name;
+        this.saleOrderObj.sale_obj.goodsCode = obj.code;
+        this.saleOrderObj.sale_obj.goodsId = obj.id
+        this.saleOrderObj.sale_obj.goodsPrice = obj.sale_price
+        this.saleOrderObj.sale_obj.discount = "0.00"
+        this.saleOrderObj.sale_obj.accountPrice = 0
+        this.saleOrderObj.sale_obj.isGiveaway = 0
+        this.saleOrderObj.sale_obj.surplusInventory = parseInt(obj.goods_balance_count)
+        this.saleOrderObj.saleNumList[this.saleOrderObj.tab_key] = util.deepClone(this.saleOrderObj.sale_obj.surplusInventory)
+        this.saleOrderObj.sale_obj.memo = obj.memo
+        this.table.lists[this.saleOrderObj.tab_key] = util.deepClone(this.saleOrderObj.sale_obj)
+        this.saleOrderObj.tab_key++
+        this.saleOrderObj.scancode = ''
+        this.saleOrderObj.scanmodal = false;
+      },
 			//获取焦点事件,因dom加载导致方法不能成功生效,第一:用自己写的input,第二:加30毫秒的延迟
 			getFoucs() {
 				setTimeout(function() {
@@ -511,41 +511,41 @@
 			//获取指定id对应的数据
 			getEditOrderData() {
 				soBillInfo({
-					ticket: sessionStorage.getItem("ticket"),
+          ticket: sessionStorage.getItem("ticket"),
 					id: this.$route.params.edit_id
 				}).then(res => {
-					this.odd_number = res.data.ref
-					this.dealDate = res.data.dealDate;
-					this.dealAddress = res.data.dealAddress;
-					this.customerId = res.data.customerId;
-					this.customerName = res.data.customerName;
-					this.contact = res.data.contact;
-					this.tel = res.data.tel;
-					this.fax = res.data.fax;
-					this.orgId = res.data.orgId;
-					this.bizUserId = Number(res.data.bizUserId);
-					this.receivingType = res.data.receivingType;
-					this.billMemo = res.data.billMemo;
-					this.removeZero = res.data.removeZero;
-					this.accountPriceTotal = res.data.totalPrice.accountPrice;
-					this.receivableMoney = res.data.totalPrice.accountPrices;
-					res.data.items.forEach((item, index) => {
-						item.surplusInventory = util.deepClone(parseInt(item.surplusInventory))
-					})
+          this.saleOrderObj["odd_number"] = ""
+					this.saleOrderObj.odd_number = res.data.ref
+					this.saleOrderObj.dealDate = res.data.dealDate;
+					this.saleOrderObj.dealAddress = res.data.dealAddress;
+					this.saleOrderObj.customerId = res.data.customerId;
+					this.saleOrderObj.customerName = res.data.customerName;
+					this.saleOrderObj.contact = res.data.contact;
+					this.saleOrderObj.tel = res.data.tel;
+					this.saleOrderObj.fax = res.data.fax;
+					this.saleOrderObj.orgId = res.data.orgId;
+					this.saleOrderObj.bizUserId = Number(res.data.bizUserId);
+					this.saleOrderObj.receivingType = res.data.receivingType;
+					this.saleOrderObj.billMemo = res.data.billMemo;
+					this.saleOrderObj.removeZero = res.data.removeZero;
+					this.saleOrderObj.accountPriceTotal = res.data.totalPrice.accountPrice;
+					this.saleOrderObj.receivableMoney = res.data.totalPrice.accountPrices;
+          res.data.items.forEach((item,index) => {
+            item.surplusInventory = util.deepClone(parseInt(item.surplusInventory))
+          })
 					this.table.lists = res.data.items;
-					this.table.lists.forEach((item, index) => {
-						this.saleNumList[index] = item.surplusInventory
-					})
-					this.totalPrice = res.data.totalPrice.goodsPrice;
-					this.taxalPrice = res.data.totalPrice.tax;
-					this.taxtTotalMoney = res.data.totalPrice.moneyWithTax;
+          this.table.lists.forEach((item,index) => {
+            this.saleOrderObj.saleNumList[index] = item.surplusInventory
+          })
+					this.saleOrderObj.totalPrice = res.data.totalPrice.goodsPrice;
+					this.saleOrderObj.taxalPrice = res.data.totalPrice.tax;
+					this.saleOrderObj.taxtTotalMoney = res.data.totalPrice.moneyWithTax;
 				})
 			},
-			//显示商品列表弹窗
 			showProduct(key) {
-				this.tab_key = key;
+				this.saleOrderObj.tab_key = key;
 				this.add_orders = true;
-				this.getGoodsList();
+        this.getGoodsList()
 			},
 			delInput(key) {
 				if(key != 0) {
@@ -553,7 +553,6 @@
 					this.sumTotalPrice(key - 1);
 				}
 			},
-			//点击添加行
 			addInput() {
 				this.table.lists.push({
 					goodsId: '',
@@ -568,25 +567,13 @@
 					accountPrice: 0,
 					isGiveaway: 0,
 					surplusInventory: 0,
+
 					taxRate: 0.17, //税率
 					tax: 0, //税金
 					moneyWithTax: 0, //价税合计
 					memo: '', //描述
 				});
 			},
-			//获取商品列表
-			getGoodsList() {
-				getGoods({
-					ticket: this.$store.state.ticket,
-				}).then(res => {
-					this.goods_list = res.data
-					var num = 1
-					this.goods_list.forEach((item, index) => {
-						item.unmid = num++
-					})
-				})
-			},
-			//在选择好商品后把选中的内容添加到行内
 			appendTitle(currentRow) {
 				for(var i = 0; i < this.table.lists.length; i++) {
 					if(this.table.lists[i].goodsId == currentRow.id) {
@@ -594,15 +581,30 @@
 						return
 					}
 				}
-				this.checkData(currentRow);
+
+				this.table.lists[this.tab_key].goodsName = currentRow.name;
+				this.table.lists[this.tab_key].goodsSpec = currentRow.spec;
+				this.table.lists[this.tab_key].unitName = currentRow.unit_name;
+				this.table.lists[this.tab_key].goodsCode = currentRow.code;
+        this.table.lists[this.tab_key].goodsId = currentRow.id;
+        this.table.lists[this.tab_key].goodsPrice = currentRow.sale_price;
+        this.table.lists[this.tab_key].surplusInventory = parseInt(currentRow.goods_balance_count);
+        this.saleOrderObj.saleNumList[this.saleOrderObj.tab_key] = util.deepClone(this.table.lists[this.saleOrderObj.tab_key].surplusInventory)
+				this.table.lists[this.tab_key].memo = currentRow.memo
+				this.saleOrderObj.sale_obj.discount = "0.00"
+				this.saleOrderObj.sale_obj.accountPrice = 0
+				this.saleOrderObj.sale_obj.isGiveaway = 0
+				this.saleOrderObj.sale_obj.surplusInventory = 0
 				this.add_orders = false;
-				this.scancode = ""
+        this.saleOrderObj.scancode = ""
 			},
-			//修改销售数量时同步修改剩余库存数
-			numberChange(key) {
-				this.table.lists[key].surplusInventory = parseInt(this.saleNumList[key]) - parseInt(this.table.lists[key].goodsCount);
-			},
-			//计算价格
+        //修改销售数量时同步修改剩余库存数
+      numberChange(key) {
+        //if( this.table.lists[key].goodsCount )saleNumList
+      /*console.log(this.saleNumList)*/  //
+        this.table.lists[key].surplusInventory = parseInt(this.saleOrderObj.saleNumList[key]) - parseInt(this.table.lists[key].goodsCount);
+
+      },
 			sumTotalPrice(key) {
 				this.table.lists[key].goodsMoney =
 					parseFloat(this.table.lists[key].goodsCount) * parseFloat(this.table.lists[key].goodsPrice);
@@ -613,33 +615,32 @@
 				this.table.lists[key].tax =
 					parseFloat(this.table.lists[key].goodsCount) * parseFloat(this.table.lists[key].goodsPrice) * 0.17;
 				this.table.lists[key].moneyWithTax = this.table.lists[key].goodsMoney + this.table.lists[key].tax;
-				this.totalPrice = 0, this.taxalPrice = 0, this.taxtTotalMoney = 0, this.accountPriceTotal = 0, this.receivableMoney = 0;
+				this.saleOrderObj.totalPrice = 0, this.saleOrderObj.taxalPrice = 0, this.saleOrderObj.taxtTotalMoney = 0, this.saleOrderObj.accountPriceTotal = 0, this.saleOrderObj.receivableMoney = 0;
 				this.table.lists.forEach((item, index) => {
 					if(item.discount == "0.00" || item.discount == "") {
 						item.accountPrice = item.goodsMoney
 					}
-					this.totalPrice += parseFloat(item.goodsMoney);
+					this.saleOrderObj.totalPrice += parseFloat(item.goodsMoney);
 					if(item.isGiveaway == 1) {
 						item.accountPrice = 0
 					}
-					this.accountPriceTotal += parseFloat(item.accountPrice);
-					this.taxalPrice += item.tax;
-					this.taxtTotalMoney += item.moneyWithTax;
+					this.saleOrderObj.accountPriceTotal += parseFloat(item.accountPrice);
+					this.saleOrderObj.taxalPrice += item.tax;
+					this.saleOrderObj.taxtTotalMoney += item.moneyWithTax;
 				})
-				this.receivableMoney = this.accountPriceTotal - this.removeZero;
+				this.saleOrderObj.receivableMoney = this.saleOrderObj.accountPriceTotal - this.saleOrderObj.removeZero;
 			},
-			//提交方法
 			submitAddOrder() {
-				if(this.customerId.trim() == '') {
+				if(this.saleOrderObj.customerId.trim() == '') {
 					this.$Message.info("请选择用户!")
 					return;
 				}
-				if(this.dealDate == '') {
+				if(this.saleOrderObj.dealDate == '') {
 					this.$Message.info("请选择业务时间!")
 					return;
 				}
-				this.orgId = ''
-				if(this.bizUserId == '') {
+				this.saleOrderObj.orgId = ''
+				if(this.saleOrderObj.bizUserId == '') {
 					this.$Message.info("请选择业务员!")
 					return;
 				}
@@ -648,20 +649,20 @@
 					return;
 				}
 				var adduser = {}
-				var datenow = new Date(this.dealDate)
-				this.dealDate = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
+				var datenow = new Date(this.saleOrderObj.dealDate)
+				this.saleOrderObj.dealDate = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
 				adduser.id = this.$route.params.edit_id;
-				adduser.removeZero = this.removeZero;
-				adduser.dealDate = this.dealDate;
-				adduser.customerId = this.customerId;
-				adduser.dealAddress = this.dealAddress;
-				adduser.contact = this.contact;
-				adduser.tel = this.tel;
-				adduser.fax = this.fax;
-				adduser.orgId = this.orgId;
-				adduser.bizUserId = this.bizUserId;
-				adduser.receivingType = this.receivingType;
-				adduser.billMemo = this.billMemo;
+				adduser.removeZero = this.saleOrderObj.removeZero;
+				adduser.dealDate = this.saleOrderObj.dealDate;
+				adduser.customerId = this.saleOrderObj.customerId;
+				adduser.dealAddress = this.saleOrderObj.dealAddress;
+				adduser.contact = this.saleOrderObj.contact;
+				adduser.tel = this.saleOrderObj.tel;
+				adduser.fax = this.saleOrderObj.fax;
+				adduser.orgId = this.saleOrderObj.orgId;
+				adduser.bizUserId = this.saleOrderObj.bizUserId;
+				adduser.receivingType = this.saleOrderObj.receivingType;
+				adduser.billMemo = this.saleOrderObj.billMemo;
 				adduser.items = this.table.lists;
 				addSOBill({
 					jsonStr: adduser,
@@ -675,48 +676,8 @@
 					}
 				})
 			},
-			//计算应付账款
 			getReviceableMoney() {
-				this.receivableMoney = this.accountPriceTotal - this.removeZero;
-			},
-			/*获取客户数据*/
-			getAllCustomers() {
-				allCustomer({
-					ticket: sessionStorage.getItem("ticket"),
-				}).then(res => {
-					res.data.forEach((item, index) => {
-						var temp = {}
-						temp.label = item.name
-						temp.value = item.id
-						this.customerslist.push(temp)
-					})
-				})
-			},
-			/*获取组织机构列表*/
-			getAllOrgsinfo() {
-				getAllOrgs({
-					ticket: sessionStorage.getItem("ticket"),
-				}).then(res => {
-					res.data.forEach((item, index) => {
-						var temp = {}
-						temp.value = item.id
-						temp.label = item.name
-						this.orgslist.push(temp)
-					})
-				})
-			},
-			/*获取业务员列表*/
-			getAllUsersinfo() {
-				getUser({
-					ticket: sessionStorage.getItem("ticket"),
-				}).then(res => {
-					res.data.forEach((item, index) => {
-						var temp = {}
-						temp.value = item.id
-						temp.label = item.nickname
-						this.alluserslist.push(temp)
-					})
-				})
+				this.saleOrderObj.receivableMoney = this.saleOrderObj.accountPriceTotal - this.saleOrderObj.removeZero;
 			},
 		}
 	}
@@ -726,15 +687,15 @@
 	input::-ms-input-placeholder {
 		text-align: center;
 	}
-	
+
 	input::-webkit-input-placeholder {
 		text-align: center;
 	}
-	
+
 	.Modal td {
 		border-right: 1px solid #e9eaec;
 	}
-	
+
 	.modea_input {
 		width: 80%;
 		text-align: center;

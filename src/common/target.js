@@ -1,7 +1,6 @@
 /**
  * created by cxx on 2018-3-13
  */
-
 var objGroup = {
   purchaseOrderObj: {
     editid: "",  //编辑使用的id

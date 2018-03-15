@@ -591,12 +591,12 @@
           width: 120,
 					key: 'sale_info_name',
            align:"center",
-				}, {
+				}, /*{
           title: '组织机构',
           width: 135,
           key: 'department_info',
            align:"center",
-        }, {
+        },*/ {
           title: '制单人',
           width: 120,
           key: 'input_menu_info',

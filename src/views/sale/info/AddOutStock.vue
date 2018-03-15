@@ -7,14 +7,14 @@
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;">单号</Col>
-				<Col span="16">{{odd_number}}</Col>
+				<Col span="16">{{outStockSaleObj.odd_number}}</Col>
 			</Row>
 			</Col>
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 业务日期</Col>
 				<Col span="16">
-				<DatePicker type="date" placeholder="请输入日期" v-model='bizDT'></DatePicker>
+				<DatePicker type="date" placeholder="请输入日期" v-model='outStockSaleObj.bizDT'></DatePicker>
 				</Col>
 			</Row>
 			</Col>
@@ -22,8 +22,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 业务员</Col>
 				<Col span="16">
-				<Select v-model='bizUserId'>
-					<Option v-for="(item,index) in alluserslist" :value="item.value" :key="item.value">{{item.label}}</Option>
+				<Select v-model='outStockSaleObj.bizUserId'>
+					<Option v-for="(item,index) in outStockSaleObj.alluserslist" :value="item.value" :key="item.value">{{item.label}}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -32,8 +32,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 出库仓库</Col>
 				<Col span="16">
-				<Select v-model="warehouseId">
-					<Option v-for="(item,index) in stock_list" :value="item.id" :key="item.id">{{ item.name }}</Option>
+				<Select v-model="outStockSaleObj.warehouseId">
+					<Option v-for="(item,index) in outStockSaleObj.stock_list" :value="item.id" :key="item.id">{{ item.name }}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -44,8 +44,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 客户</Col>
 				<Col span="16">
-				<Select v-model="customerId">
-					<Option v-for="(item,index) in customerslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+				<Select v-model="outStockSaleObj.customerId">
+					<Option v-for="(item,index) in outStockSaleObj.customerslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -54,8 +54,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;">收款方式</Col>
 				<Col span="16">
-				<Select v-model='receivingType'>
-					<Option v-for="(item,index) in paymentlist" :value="item.value" :key="item.value">{{item.label}}</Option>
+				<Select v-model='outStockSaleObj.receivingType'>
+					<Option v-for="(item,index) in outStockSaleObj.paymentlist" :value="item.value" :key="item.value">{{item.label}}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -64,7 +64,7 @@
 			<Row>
 				<Col span="4" style="text-align: center;">送货地址</Col>
 				<Col span="20">
-				<Input v-model="dealAddress"></Input>
+				<Input v-model="outStockSaleObj.dealAddress"></Input>
 				</Col>
 			</Row>
 			</Col>
@@ -73,7 +73,7 @@
 			<Col span="16">
 			<Col span="2" style="text-align: center;">备注</Col>
 			<Col span="22">
-			<Input v-model="billMemo"></Input>
+			<Input v-model="outStockSaleObj.billMemo"></Input>
 			</Col>
 			</Col>
 		</Row>
@@ -202,9 +202,13 @@
 									<td class="">销售金额合计：
 									</td>
 									<td class="">
-										{{totalPrice | filterByNumber}}
+										{{outStockSaleObj.totalPrice | filterByNumber}}
 									</td>
 									<td class=""></td>
+									<!--<td class="">
+										{{taxalPrice | filterByNumber}}
+									</td>
+									<td class="">{{taxtTotalMoney| filterByNumber}}</td>-->
 									<td class="">
 									</td>
 									<td class=""></td>
@@ -215,15 +219,15 @@
 							<p slot="header" style="color:#2D8CF0;text-align:left">
 								<span>选择商品</span>
 							</p>
-							<i-table border :columns="goodsTitle" :data="goods_list" height="400" :highlight-row="hrow" @on-row-click="appendTitle"></i-table>
+							<i-table border :columns="outStockSaleObj.goodsTitle" :data="outStockSaleObj.goods_list" height="400" :highlight-row="outStockSaleObj.hrow" @on-row-click="appendTitle"></i-table>
 						</Modal>
-						<Modal v-model="scanmodal" width="700">
+						<Modal v-model="outStockSaleObj.scanmodal" width="700">
 							<p slot="header" style="color:#2D8CF0;text-align:left;font-size:20px;">
 								<span>扫描商品码</span>
 							</p>
 							<div slot="footer">
 							</div>
-							<input @change='chooseGoods' style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="scancode" type="" name="getfoucs" id="getfoucs" value="" placeholder="请扫描商品码" autofocus />
+							<input @change='chooseGoods' style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="outStockSaleObj.scancode" type="" name="getfoucs" id="getfoucs" value="" placeholder="请扫描商品码" autofocus />
 						</Modal>
 					</div>
 				</div>
@@ -237,100 +241,30 @@
 </template>
 
 <script>
-	import { getGoods, allCustomer, getAllOrgs, getAllUsers, getUser, editWSBill, getAllStock, getOneGoods, getZsmInfo } from '../../../api/api'
-	import util from '../../../common/util.js'
+	import { getGoods, allCustomer, getAllOrgs, getAllUsers,getUser, editWSBill, getAllStock, getOneGoods, getZsmInfo } from '../../../api/api'
+  import util from '../../../common/util.js'
+	import objGroup from '../../../common/target'
 	export default {
 		mounted() {
-			this.$store.state.ticket = sessionStorage.getItem("ticket")
+      this.$store.state.ticket = sessionStorage.getItem("ticket")
+      this.outStockSaleObj = util.deepClone(objGroup.saleOrderObj)
 			this.getGoodsList();
 			this.getAllCustomers();
 			this.getAllOrgsinfo();
 			this.getAllUsersinfo();
 			this.getStockList();
-			this.table.lists[0] = this.sale_obj
+      this.table.lists[0] = this.outStockSaleObj.outstock_sale_obj
+      var datenow = new Date()
+      this.outStockSaleObj.bizDT = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
+      this.outStockSaleObj.bizUserId = parseInt(sessionStorage.getItem("user_id"))
 		},
 		data() {
 			return {
-				odd_number: '保存后自动添加',
-				hrow: true,
-				checkVriable: 0,
-				totalPrice: 0,
-				taxalPrice: 0,
-				taxtTotalMoney: 0,
-				goodsTitle: [{
-						title: '商品编码',
-						key: 'code',
-						align: "center",
-					},
-					{
-						title: '商品',
-						key: 'name',
-						align: "center",
-					},
-					{
-						title: '规格型号',
-						key: 'spec',
-						align: "center",
-					},
-					{
-						title: '单位',
-						align: "center",
-						key: 'unit_name'
-					},
-					{
-						title: '建议采购价',
-						align: "center",
-						key: 'goodsPrice'
-					},
-					{
-						title: '备注',
-						align: "center",
-						key: 'memo'
-					}
-				],
 				table: {
 					lists: []
 				},
-				sale_obj: {
-					goodsId: '',
-					code: '',
-					name: "",
-					spec: "",
-					goodsCount: 0, //采购数量
-					unit_name: "",
-					goodsPrice: 0, //采购单价
-					goodsMoney: 0, //采购总额
-					soBillDetailId: '', //序列号
-					sn: '',
-					memo: '', //描述
-				},
+        outStockSaleObj: {},
 				add_orders: false,
-				goods_list: [],
-				tab_key: 0,
-				tax: 0,
-				customerslist: [], //客户列表
-
-				bizDT: '', //绑定的业务时间
-				customerId: '', //绑定客户id
-				dealAddress: '', //交货的地址
-				contact: '', //联系人
-				tel: '', //电话
-				fax: '', //传真
-				orgId: '', //组织机构id
-				bizUserId: '', //业务员id
-				receivingType: '', //付款传的的id
-				billMemo: "", //备注
-				warehouseId: '', //仓库的id
-				sobillRef: '',
-				orgslist: [], //组织机构列表
-				alluserslist: [], //业务员列表
-				paymentlist: [{
-					value: 1,
-					label: '现金付款'
-				}],
-				stock_list: [], //仓库列表
-				scanmodal: false,
-				scancode: "",
 			}
 		},
 		filters: {
@@ -345,10 +279,10 @@
 			},
 			//点击扫码入库触发事件
 			showSan(key) {
-				this.scanmodal = true;
-				this.scancode = ""
+				this.outStockSaleObj.scanmodal = true;
+        this.outStockSaleObj.scancode = ""
 				this.getFoucs();
-				this.tab_key = key
+				this.outStockSaleObj.tab_key = key
 			},
 			//获取焦点事件,因dom加载导致方法不能成功生效,第一:用自己写的input,第二:加30毫秒的延迟
 			getFoucs() {
@@ -358,92 +292,89 @@
 			},
 			//点击扫码入库时弹出扫码入库模态框,当输入内容的时候
 			chooseGoods() {
-				var hell = this.scancode.split('，').length
-				if(hell > 1) {
-					getZsmInfo({
-						ticket: sessionStorage.getItem("ticket"),
-						zsm: this.scancode.split('，')[0],
-						pzwh: this.scancode.split('，')[2],
-					}).then(res => {
-						/*console.log(res)*/
-						if(res.retcode == "2001") {
-							this.$Message.info("没有该商品，请重新扫描!");
-							this.scancode = "";
-							return;
-						}
-						if(res.data.length > 1) {
-							this.add_orders = true;
-							this.goods_list = res.data;
-							this.scanmodal = false;
-							return;
-						} else if(res.data[0]) {
-							for(var i = 0; i < this.table.lists.length; i++) {
-								if(this.table.lists[i].goodsId == res.data[0].id) {
-									this.$Message.info("不可选择重复商品");
-									this.scancode = '';
-									return;
-								}
-							}
-							this.checkData(res.data[0]);
-							return
-						}
-						for(var i = 0; i < this.table.lists.length; i++) {
-							if(this.table.lists[i].goodsId == res.data.id) {
-								this.$Message.info("不可选择重复商品");
-								this.scancode = '';
-								return;
-							}
-						}
-						this.checkData(res.data);
-					})
+				var hell = this.outStockSaleObj.scancode.split('，').length
+        if(hell > 1) {
+          getZsmInfo({
+            ticket: sessionStorage.getItem("ticket"),
+            zsm: this.outStockSaleObj.scancode.split('，')[0],
+            pzwh: this.outStockSaleObj.scancode.split('，')[2],
+          }).then(res => {
+            /*console.log(res)*/
+            if(res.retcode == "2001") {
+              this.$Message.info("没有该商品，请重新扫描!");
+              this.outStockSaleObj.scancode = "";
+              return;
+            }
+            if(res.data.length>1){
+              this.add_orders = true;
+              this.outStockSaleObj.goods_list = res.data;
+              this.outStockSaleObj.scanmodal = false;
+              return;
+            }else if(res.data[0]){
+              for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goodsId == res.data[0].id) {
+                this.$Message.info("不可选择重复商品");
+                this.outStockSaleObj.scancode = '';
+                return;
+              }
+            }
+              this.checkData(res.data[0]);
+              return
+            }
+            for(var i = 0; i < this.table.lists.length; i++) {
+              if(this.table.lists[i].goodsId == res.data.id) {
+                this.$Message.info("不可选择重复商品");
+                this.outStockSaleObj.scancode = '';
+                return;
+              }
+            }
+            this.checkData(res.data);
+          })
 				} else {
 					getOneGoods({
-						ticket: sessionStorage.getItem("ticket"),
-						bar_code: this.scancode
+            ticket: sessionStorage.getItem("ticket"),
+						bar_code: this.outStockSaleObj.scancode
 					}).then(res => {
-						if(!res.data) {
-							this.$Message.info("没有该商品，请重新扫描!")
-							this.scancode = ""
-						}
+            if(!res.data){
+              this.$Message.info("没有该商品，请重新扫描!")
+                  this.outStockSaleObj.scancode = ""
+                  return
+            }
 						for(var i = 0; i < this.table.lists.length; i++) {
 							if(this.table.lists[i].goodsId == res.data.id) {
 								this.$Message.info("不可选择重复商品")
-								this.scancode = ''
+								this.outStockSaleObj.scancode = ''
 								return
 							}
 						}
-						this.checkData(res.data)
+            this.checkData(res.data)
 					})
 				}
 			},
-			//抽出公共的赋值方法
-			checkData(obj) {
-				this.sale_obj.name = obj.name;
-				this.sale_obj.spec = obj.spec;
-				this.sale_obj.unitName = obj.unit_name;
-				this.sale_obj.code = obj.code;
-				this.sale_obj.goodsId = obj.id
-				this.sale_obj.goodsPrice = obj.sale_price
-				this.sale_obj.memo = obj.memo
-				this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
-				this.tab_key++;
-				this.scancode = '';
-				this.scanmodal = false;
-			},
-			//商品列表
+      checkData(obj){
+        this.outStockSaleObj.outstock_sale_obj.name = obj.name;
+        this.outStockSaleObj.outstock_sale_obj.spec = obj.spec;
+        this.outStockSaleObj.outstock_sale_obj.unitName = obj.unit_name;
+        this.outStockSaleObj.outstock_sale_obj.code = obj.code;
+        this.outStockSaleObj.outstock_sale_obj.goodsId = obj.id
+        this.outStockSaleObj.outstock_sale_obj.goodsPrice = obj.sale_price
+        this.outStockSaleObj.outstock_sale_obj.memo = obj.memo
+        this.table.lists[this.outStockSaleObj.tab_key] = util.deepClone(this.outStockSaleObj.outstock_sale_obj)
+        this.outStockSaleObj.tab_key++
+        this.outStockSaleObj.scancode = ''
+        this.outStockSaleObj.scanmodal = false;
+      },
 			showProduct(key) {
-				this.tab_key = key;
+				this.outStockSaleObj.tab_key = key;
 				this.add_orders = true;
-				this.getGoodsList();
+        this.getGoodsList();
 			},
-			//删除行
 			delInput(key) {
 				if(key != 0) {
 					this.table.lists.splice(key, 1);
 					this.sumTotalPrice(key - 1);
 				}
 			},
-			//添加行
 			addInput() {
 				this.table.lists.push({
 					goodsId: '',
@@ -459,19 +390,17 @@
 					memo: '', //描述
 				});
 			},
-			//获取商品列表
 			getGoodsList() {
 				getGoods({
 					ticket: this.$store.state.ticket,
 				}).then(res => {
-					this.goods_list = res.data
+					this.outStockSaleObj.goods_list = res.data
 					var num = 1
-					this.goods_list.forEach((item, index) => {
+					this.outStockSaleObj.goods_list.forEach((item, index) => {
 						item.unmid = num++
 					})
 				})
 			},
-			//插入商品列表弹窗中指定的行
 			appendTitle(currentRow) {
 				for(var i = 0; i < this.table.lists.length; i++) {
 					if(this.table.lists[i].goodsId == currentRow.id) {
@@ -479,45 +408,47 @@
 						return
 					}
 				}
-				this.sale_obj.name = currentRow.name;
-				this.sale_obj.spec = currentRow.spec;
-				this.sale_obj.unit_name = currentRow.unit_name;
-				this.sale_obj.code = currentRow.code;
-				this.sale_obj.goodsId = currentRow.id
-				this.sale_obj.goodsPrice = currentRow.sale_price
-				this.sale_obj.memo = currentRow.memo
-				this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
+
+				this.outStockSaleObj.outstock_sale_obj.name = currentRow.name;
+				this.outStockSaleObj.outstock_sale_obj.spec = currentRow.spec;
+				this.outStockSaleObj.outstock_sale_obj.unit_name = currentRow.unit_name;
+				this.outStockSaleObj.outstock_sale_obj.code = currentRow.code;
+				this.outStockSaleObj.outstock_sale_obj.goodsId = currentRow.id
+        this.outStockSaleObj.outstock_sale_obj.goodsPrice = currentRow.sale_price
+				this.outStockSaleObj.outstock_sale_obj.memo = currentRow.memo
+				this.outStockSaleObj.outstock_sale_obj.soBillDetailId = ''
+				this.outStockSaleObj.outstock_sale_obj.sn = ''
+        this.table.lists[this.outStockSaleObj.tab_key] = util.deepClone(this.outStockSaleObj.outstock_sale_obj)
 				this.add_orders = false;
 			},
-			//计算总价
 			sumTotalPrice(key) {
 				this.table.lists[key].goodsMoney =
 					parseFloat(this.table.lists[key].goodsCount) * parseFloat(this.table.lists[key].goodsPrice);
 				this.table.lists[key].tax =
 					parseFloat(this.table.lists[key].goodsCount) * parseFloat(this.table.lists[key].goodsPrice) * 0.17;
 				this.table.lists[key].moneyWithTax = this.table.lists[key].goodsMoney + this.table.lists[key].tax;
-				this.totalPrice = 0, this.taxalPrice = 0, this.taxtTotalMoney = 0;
+				this.outStockSaleObj.totalPrice = 0, this.outStockSaleObj.taxalPrice = 0, this.outStockSaleObj.taxtTotalMoney = 0;
 				this.table.lists.forEach((item, index) => {
-					this.totalPrice += item.goodsMoney;
-					this.taxalPrice += item.tax;
-					this.taxtTotalMoney += item.moneyWithTax;
+					this.outStockSaleObj.totalPrice += item.goodsMoney;
+					this.outStockSaleObj.taxalPrice += item.tax;
+					this.outStockSaleObj.taxtTotalMoney += item.moneyWithTax;
 				})
 			},
-			//提交新建销售出库单
 			submitAddOrder() {
-				if(this.customerId.trim() == '') {
+
+				if(this.outStockSaleObj.customerId.trim() == '') {
 					this.$Message.info("请选择用户!")
 					return;
 				}
-				if(this.bizDT == '') {
+				if(this.outStockSaleObj.bizDT == '') {
 					this.$Message.info("请选择业务时间!")
 					return;
 				}
-				if(this.warehouseId.trim() == '') {
+				if(this.outStockSaleObj.warehouseId.trim() == '') {
 					this.$Message.info("请选择出库仓库!")
 					return;
 				}
-				if(this.bizUserId == '') {
+				if(this.outStockSaleObj.bizUserId == '') {
 					this.$Message.info("请选择业务员!")
 					return;
 				}
@@ -525,34 +456,34 @@
 					this.$Message.info("请选择商品!")
 					return;
 				}
-				for(var i = 0; i < this.table.lists.length; i++) {
-					if(this.table.lists[i].goodsCount == "" || this.table.lists[i].goodsCount == 0) {
-						this.$Message.info("请选择采购数量")
-						return
-					}
-				}
-				for(var i = 0; i < this.table.lists.length; i++) {
-					if(this.table.lists[i].goodsPrice == "" || this.table.lists[i].goodsPrice == 0) {
-						this.$Message.info("请选择采购单价")
-						return
-					}
-				}
+        for(var i=0;i<this.table.lists.length;i++){
+          if(this.table.lists[i].goodsCount == "" || this.table.lists[i].goodsCount == 0){
+            this.$Message.info("请选择采购数量")
+            return
+          }
+          }
+          for(var i=0;i<this.table.lists.length;i++){
+          if(this.table.lists[i].goodsPrice == "" || this.table.lists[i].goodsPrice == 0){
+            this.$Message.info("请选择采购单价")
+            return
+          }
+          }
 				var adduser = {}
-				var datenow = new Date(this.bizDT)
-				this.bizDT = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
+				var datenow = new Date(this.outStockSaleObj.bizDT)
+				this.outStockSaleObj.bizDT = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
 				adduser.id = '';
-				adduser.bizDT = this.bizDT;
-				adduser.customerId = this.customerId;
-				adduser.warehouseId = this.warehouseId;
-				adduser.bizUserId = this.bizUserId;
-				adduser.receivingType = this.receivingType;
-				adduser.billMemo = this.billMemo;
-				adduser.dealAddress = this.dealAddress;
-				adduser.sobillRef = this.sobillRef;
+				adduser.bizDT = this.outStockSaleObj.bizDT;
+				adduser.customerId = this.outStockSaleObj.customerId;
+				adduser.warehouseId = this.outStockSaleObj.warehouseId;
+				adduser.bizUserId = this.outStockSaleObj.bizUserId;
+				adduser.receivingType = this.outStockSaleObj.receivingType;
+				adduser.billMemo = this.outStockSaleObj.billMemo;
+				adduser.dealAddress = this.outStockSaleObj.dealAddress;
+				adduser.sobillRef = this.outStockSaleObj.sobillRef;
 				adduser.items = this.table.lists;
 				editWSBill({
 					jsonStr: adduser,
-					loginUserId: sessionStorage.getItem('ticket'),
+          loginUserId: sessionStorage.getItem('ticket'),
 				}).then(res => {
 					if(res.retcode == 2000) {
 						this.$Message.info(res.msg)
@@ -566,48 +497,49 @@
 			/*获取客户数据*/
 			getAllCustomers() {
 				allCustomer({
-					ticket: sessionStorage.getItem("ticket"),
-				}).then(res => {
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
 					res.data.forEach((item, index) => {
 						var temp = {}
 						temp.label = item.name
 						temp.value = item.id
-						this.customerslist.push(temp)
+						this.outStockSaleObj.customerslist.push(temp)
 					})
 				})
 			},
 			/*获取组织机构列表*/
 			getAllOrgsinfo() {
 				getAllOrgs({
-					ticket: sessionStorage.getItem("ticket"),
-				}).then(res => {
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
 					res.data.forEach((item, index) => {
 						var temp = {}
 						temp.value = item.id
 						temp.label = item.name
-						this.orgslist.push(temp)
+						this.outStockSaleObj.orgslist.push(temp)
 					})
 				})
 			},
 			/*获取业务员列表*/
 			getAllUsersinfo() {
 				getUser({
-					ticket: sessionStorage.getItem("ticket"),
-				}).then(res => {
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
 					res.data.forEach((item, index) => {
 						var temp = {}
 						temp.value = item.id
 						temp.label = item.nickname
-						this.alluserslist.push(temp)
+						this.outStockSaleObj.alluserslist.push(temp)
 					})
 				})
 			},
 			//获取仓库列表
 			getStockList() {
 				getAllStock({
-					ticket: sessionStorage.getItem("ticket"),
-				}).then(res => {
-					this.stock_list = res.data;
+          ticket: sessionStorage.getItem("ticket"),
+        }).then(res => {
+					/*console.log(res)*/
+					this.outStockSaleObj.stock_list = res.data;
 				})
 			}
 		}
@@ -618,15 +550,15 @@
 	input::-ms-input-placeholder {
 		text-align: center;
 	}
-	
+
 	input::-webkit-input-placeholder {
 		text-align: center;
 	}
-	
+
 	.Modal td {
 		border-right: 1px solid #e9eaec;
 	}
-	
+
 	.modea_input {
 		width: 80%;
 		text-align: center;

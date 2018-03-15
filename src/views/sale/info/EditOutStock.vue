@@ -7,14 +7,14 @@
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;">单号</Col>
-				<Col span="16">{{odd_number}}</Col>
+				<Col span="16">{{outStockSaleObj.odd_number}}</Col>
 			</Row>
 			</Col>
 			<Col span="4">
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 业务日期</Col>
 				<Col span="16">
-				<DatePicker type="date" placeholder="请输入日期" v-model='bizDT'></DatePicker>
+				<DatePicker type="date" placeholder="请输入日期" v-model='outStockSaleObj.bizDT'></DatePicker>
 				</Col>
 			</Row>
 			</Col>
@@ -22,8 +22,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 业务员</Col>
 				<Col span="16">
-				<Select v-model='bizUserId'>
-					<Option v-for="(item,index) in alluserslist" :value="item.value" :key="item.value">{{item.label}}</Option>
+				<Select v-model='outStockSaleObj.bizUserId'>
+					<Option v-for="(item,index) in outStockSaleObj.alluserslist" :value="item.value" :key="item.value">{{item.label}}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -32,8 +32,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 出库仓库</Col>
 				<Col span="16">
-				<Select v-model="warehouseId">
-					<Option v-for="(item,index) in stock_list" :value="item.id" :key="item.id">{{ item.name }}</Option>
+				<Select v-model="outStockSaleObj.warehouseId">
+					<Option v-for="(item,index) in outStockSaleObj.stock_list" :value="item.id" :key="item.id">{{ item.name }}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -44,8 +44,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;"><span style="color: red;">*</span> 客户</Col>
 				<Col span="16">
-				<Select v-model="customerId">
-					<Option v-for="(item,index) in customerslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
+				<Select v-model="outStockSaleObj.customerId">
+					<Option v-for="(item,index) in outStockSaleObj.customerslist" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -54,8 +54,8 @@
 			<Row>
 				<Col span="8" style="text-align: center;">收款方式</Col>
 				<Col span="16">
-				<Select v-model='receivingType'>
-					<Option v-for="(item,index) in paymentlist" :value="item.value" :key="item.value">{{item.label}}</Option>
+				<Select v-model='outStockSaleObj.receivingType'>
+					<Option v-for="(item,index) in outStockSaleObj.paymentlist" :value="item.value" :key="item.value">{{item.label}}</Option>
 				</Select>
 				</Col>
 			</Row>
@@ -64,7 +64,7 @@
 			<Row>
 				<Col span="4" style="text-align: center;">送货地址</Col>
 				<Col span="20">
-				<Input v-model="dealAddress"></Input>
+				<Input v-model="outStockSaleObj.dealAddress"></Input>
 				</Col>
 			</Row>
 			</Col>
@@ -73,7 +73,7 @@
 			<Col span="16">
 			<Col span="2" style="text-align: center;">备注</Col>
 			<Col span="22">
-			<Input v-model="billMemo"></Input>
+			<Input v-model="outStockSaleObj.billMemo"></Input>
 			</Col>
 			</Col>
 		</Row>
@@ -172,6 +172,13 @@
 									</td>
 									<td class="">{{list.sn}}</Input>
 									</td>
+									<!--<td class="">17%</td>
+									<td class="">
+										{{list.tax|filterByNumber}}
+									</td>
+									<td class="">
+										{{list.moneyWithTax|filterByNumber}}
+									</td>-->
 									<td class="">
 										<Input placeholder="备注" class='modea_input' v-model="list.memo"></Input>
 									</td>
@@ -195,9 +202,13 @@
 									<td class="">销售金额合计：
 									</td>
 									<td class="">
-										{{totalPrice | filterByNumber}}
+										{{outStockSaleObj.totalPrice | filterByNumber}}
 									</td>
 									<td class=""></td>
+									<!--<td class="">
+										{{taxalPrice | filterByNumber}}
+									</td>
+									<td class="">{{taxtTotalMoney| filterByNumber}}</td>-->
 									<td class="">
 									</td>
 									<td class=""></td>
@@ -208,15 +219,15 @@
 							<p slot="header" style="color:#2D8CF0;text-align:left">
 								<span>选择商品</span>
 							</p>
-							<i-table border :columns="goodsTitle" :data="goods_list" height="400" :highlight-row="hrow" @on-row-click="appendTitle"></i-table>
+							<i-table border :columns="outStockSaleObj.goodsTitle" :data="outStockSaleObj.goods_list" height="400" :highlight-row="outStockSaleObj.hrow" @on-row-click="appendTitle"></i-table>
 						</Modal>
-						<Modal v-model="scanmodal" width="700">
+						<Modal v-model="outStockSaleObj.scanmodal" width="700">
 							<p slot="header" style="color:#2D8CF0;text-align:left;font-size:20px;">
 								<span>扫描商品码</span>
 							</p>
 							<div slot="footer">
 							</div>
-							<input @change='chooseGoods' style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="scancode" type="" name="getfoucs" id="getfoucs" value="" placeholder="请扫描商品码" autofocus />
+							<input @change='chooseGoods' style="width: 100%;height: 30px;line-height: 30px;border-radius: 5px;border: 1px solid #CCCCCC;" v-model="outStockSaleObj.scancode" type="" name="getfoucs" id="getfoucs" value="" placeholder="请扫描商品码" autofocus />
 						</Modal>
 					</div>
 				</div>
@@ -231,10 +242,16 @@
 
 <script>
 	import { getGoods, allCustomer, getAllOrgs, getAllUsers,getUser, editWSBill, getAllStock, wsBillInfo, getOneGoods, getZsmInfo } from '../../../api/api'
-	import util from '../../../common/util.js'
+  import util from '../../../common/util.js'
+	import objGroup from '../../../common/target.js'
 	export default {
 		mounted() {
       this.$store.state.ticket = sessionStorage.getItem("ticket")
+      this.outStockSaleObj = util.deepClone(objGroup.saleOrderObj)
+      this.table.lists[0] = this.outStockSaleObj.outstock_sale_obj
+      var datenow = new Date()
+      this.outStockSaleObj.bizDT = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
+      this.outStockSaleObj.bizUserId = parseInt(sessionStorage.getItem("user_id"))
 			this.getGoodsList();
 			this.getAllCustomers();
 			this.getAllOrgsinfo();
@@ -244,89 +261,11 @@
 		},
 		data() {
 			return {
-				odd_number: '保存后自动添加',
-				hrow: true,
-				checkVriable: 0,
-				totalPrice: 0,
-				taxalPrice: 0,
-				taxtTotalMoney: 0,
-				goodsTitle: [{
-						title: '商品编码',
-						key: 'code',
-						align: "center",
-					},
-					{
-						title: '商品',
-						key: 'name',
-						align: "center",
-					},
-					{
-						title: '规格型号',
-						key: 'spec',
-						align: "center",
-					},
-					{
-						title: '单位',
-						align: "center",
-						key: 'unit_name'
-					},
-					{
-						title: '建议采购价',
-						align: "center",
-						key: 'goodsPrice'
-					},
-					{
-						title: '备注',
-						align: "center",
-						key: 'memo'
-					}
-				],
 				table: {
 					lists: []
 				},
-				sale_obj: {
-					goodsId: '',
-					goodsCode: '',
-					goodsName: "",
-					goodsSpec: "",
-					goodsCount: 0, //采购数量
-					unitName: "",
-					goodsPrice: 0, //采购单价
-					goodsMoney: 0, //采购总额
-					soBillDetailId: '', //序列号
-					sn: '',
-					memo: '', //描述
-				},
+        outStockSaleObj: {},
 				add_orders: false,
-				goods_list: [],
-				tab_key: 0,
-				tax: 0,
-				customerslist: [], //客户列表
-				bizDT: '', //绑定的业务时间
-				customerId: '', //绑定客户id
-				dealAddress: '', //交货的地址
-				contact: '', //联系人
-				tel: '', //电话
-				fax: '', //传真
-				orgId: '', //组织机构id
-				bizUserId: '', //业务员id
-				receivingType: '', //付款传的的id
-				billMemo: "", //备注
-				warehouseId: '', //仓库的id
-				sobillRef: '',
-				orgslist: [], //组织机构列表
-				alluserslist: [], //业务员列表
-				paymentlist: [/*{
-					value: 0,
-					label: '记应收账款'
-				}, */{
-					value: 1,
-					label: '现金付款'
-				}],
-				stock_list: [], //仓库列表
-				scanmodal: false,
-				scancode: "",
-
 			}
 		},
 		filters: {
@@ -341,10 +280,10 @@
 			},
 			//点击扫码入库触发事件
 			showSan(key) {
-				this.scanmodal = true;
-        this.scancode = "";
+				this.outStockSaleObj.scanmodal = true;
+        this.outStockSaleObj.scancode = "";
 				this.getFoucs();
-				this.tab_key = key
+				this.outStockSaleObj.tab_key = key
 			},
 			//获取焦点事件,因dom加载导致方法不能成功生效,第一:用自己写的input,第二:加30毫秒的延迟
 			getFoucs() {
@@ -354,29 +293,29 @@
 			},
 			//点击扫码入库时弹出扫码入库模态框,当输入内容的时候
 			chooseGoods() {
-        var hell = this.scancode.split('，').length
+        var hell = this.outStockSaleObj.scancode.split('，').length
         if(hell > 1) {
           getZsmInfo({
             ticket: sessionStorage.getItem("ticket"),
-            zsm: this.scancode.split('，')[0],
-            pzwh: this.scancode.split('，')[2],
+            zsm: this.outStockSaleObj.scancode.split('，')[0],
+            pzwh: this.outStockSaleObj.scancode.split('，')[2],
           }).then(res => {
             /*console.log(res)*/
             if(res.retcode == "2001") {
               this.$Message.info("没有该商品，请重新扫描!");
-              this.scancode = "";
+              this.outStockSaleObj.scancode = "";
               return;
             }
             if(res.data.length>1){
               this.add_orders = true;
-              this.goods_list = res.data;
-              this.scanmodal = false;
+              this.outStockSaleObj.goods_list = res.data;
+              this.outStockSaleObj.scanmodal = false;
               return;
             }else if(res.data[0]){
               for(var i = 0; i < this.table.lists.length; i++) {
               if(this.table.lists[i].goodsId == res.data[0].id) {
                 this.$Message.info("不可选择重复商品");
-                this.scancode = '';
+                this.outStockSaleObj.scancode = '';
                 return;
               }
             }
@@ -386,7 +325,7 @@
             for(var i = 0; i < this.table.lists.length; i++) {
               if(this.table.lists[i].goodsId == res.data.id) {
                 this.$Message.info("不可选择重复商品");
-                this.scancode = '';
+                this.outStockSaleObj.scancode = '';
                 return;
               }
             }
@@ -395,16 +334,17 @@
 				} else {
 					getOneGoods({
             ticket: sessionStorage.getItem("ticket"),
-						bar_code: this.scancode
+						bar_code: this.outStockSaleObj.scancode
 					}).then(res => {
             if(!res.data){
               this.$Message.info("没有该商品，请重新扫描!")
-                  this.scancode = ""
+                this.outStockSaleObj.scancode = ""
+                return
             }
 						for(var i = 0; i < this.table.lists.length; i++) {
 							if(this.table.lists[i].goodsId == res.data.id) {
 								this.$Message.info("不可选择重复商品")
-								this.scancode = ''
+								this.outStockSaleObj.scancode = ''
 								return
 							}
 						}
@@ -413,20 +353,20 @@
 				}
 			},
       checkData(obj){
-        this.sale_obj.goodsName = obj.name;
-        this.sale_obj.goodsSpec = obj.spec;
-        this.sale_obj.unitName = obj.unit_name;
-        this.sale_obj.goodsCode = obj.code;
-        this.sale_obj.goodsId = obj.id
-        this.sale_obj.goodsPrice = obj.sale_price
-        this.sale_obj.memo = obj.memo
-        this.table.lists[this.tab_key] = util.deepClone(this.sale_obj)
-        this.tab_key++
-          this.scancode = ''
-        this.scanmodal = false;
+        this.outStockSaleObj.sale_obj.goodsName = obj.name;
+        this.outStockSaleObj.sale_obj.goodsSpec = obj.spec;
+        this.outStockSaleObj.sale_obj.unitName = obj.unit_name;
+        this.outStockSaleObj.sale_obj.goodsCode = obj.code;
+        this.outStockSaleObj.sale_obj.goodsId = obj.id
+        this.outStockSaleObj.sale_obj.goodsPrice = obj.sale_price
+        this.outStockSaleObj.sale_obj.memo = obj.memo
+        this.table.lists[this.outStockSaleObj.tab_key] = util.deepClone(this.outStockSaleObj.sale_obj)
+        this.outStockSaleObj.tab_key++
+        this.outStockSaleObj.scancode = ''
+        this.outStockSaleObj.scanmodal = false;
       },
 			showProduct(key) {
-				this.tab_key = key;
+				this.outStockSaleObj.tab_key = key;
 				this.add_orders = true;
         this.getGoodsList();
 			},
@@ -455,9 +395,9 @@
 				getGoods({
 					ticket: this.$store.state.ticket,
 				}).then(res => {
-					this.goods_list = res.data
+					this.outStockSaleObj.goods_list = res.data
 					var num = 1
-					this.goods_list.forEach((item, index) => {
+					this.outStockSaleObj.goods_list.forEach((item, index) => {
 						item.unmid = num++
 					})
 				})
@@ -469,15 +409,15 @@
 						return
 					}
 				}
-				this.table.lists[this.tab_key].goodsName = currentRow.name;
-				this.table.lists[this.tab_key].goodsSpec = currentRow.spec;
-				this.table.lists[this.tab_key].unitName = currentRow.unit_name;
-				this.table.lists[this.tab_key].goodsCode = currentRow.code;
-        this.table.lists[this.tab_key].goodsId = currentRow.id
-				this.table.lists[this.tab_key].goodsPrice = currentRow.sale_price
-				this.table.lists[this.tab_key].memo = currentRow.memo
-				this.table.lists[this.tab_key].soBillDetailId = ''
-				this.table.lists[this.tab_key].sn = ''
+				this.table.lists[this.outStockSaleObj.tab_key].goodsName = currentRow.name;
+				this.table.lists[this.outStockSaleObj.tab_key].goodsSpec = currentRow.spec;
+				this.table.lists[this.outStockSaleObj.tab_key].unitName = currentRow.unit_name;
+				this.table.lists[this.outStockSaleObj.tab_key].goodsCode = currentRow.code;
+        this.table.lists[this.outStockSaleObj.tab_key].goodsId = currentRow.id
+				this.table.lists[this.outStockSaleObj.tab_key].goodsPrice = currentRow.sale_price
+				this.table.lists[this.outStockSaleObj.tab_key].memo = currentRow.memo
+				this.table.lists[this.outStockSaleObj.tab_key].soBillDetailId = ''
+				this.table.lists[this.outStockSaleObj.tab_key].sn = ''
 				this.add_orders = false;
 			},
 			sumTotalPrice(key) {
@@ -486,27 +426,27 @@
 				this.table.lists[key].tax =
 					parseFloat(this.table.lists[key].goodsCount) * parseFloat(this.table.lists[key].goodsPrice) * 0.17;
 				this.table.lists[key].moneyWithTax = this.table.lists[key].goodsMoney + this.table.lists[key].tax;
-				this.totalPrice = 0, this.taxalPrice = 0, this.taxtTotalMoney = 0;
+				this.outStockSaleObj.totalPrice = 0, this.outStockSaleObj.taxalPrice = 0, this.outStockSaleObj.taxtTotalMoney = 0;
 				this.table.lists.forEach((item, index) => {
-					this.totalPrice += parseFloat(item.goodsMoney)
-					this.taxalPrice += item.tax;
-					this.taxtTotalMoney += item.moneyWithTax;
+					this.outStockSaleObj.totalPrice += parseFloat(item.goodsMoney)
+					this.outStockSaleObj.taxalPrice += item.tax;
+					this.outStockSaleObj.taxtTotalMoney += item.moneyWithTax;
 				})
 			},
 			submitAddOrder() {
-				if(this.customerId.trim() == '') {
+				if(this.outStockSaleObj.customerId.trim() == '') {
 					this.$Message.info("请选择用户!")
 					return;
 				}
-				if(this.bizDT == '') {
+				if(this.outStockSaleObj.bizDT == '') {
 					this.$Message.info("请选择业务时间!")
 					return;
 				}
-				if(this.warehouseId.trim() == '') {
+				if(this.outStockSaleObj.warehouseId.trim() == '') {
 					this.$Message.info("请选择出库仓库!")
 					return;
 				}
-				if(this.bizUserId == '') {
+				if(this.outStockSaleObj.bizUserId == '') {
 					this.$Message.info("请选择业务员!")
 					return;
 				}
@@ -528,17 +468,17 @@
           }
 				/*console.log(this.table.lists)*/
 				var adduser = {}
-				var datenow = new Date(this.bizDT)
-				this.bizDT = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
+				var datenow = new Date(this.outStockSaleObj.bizDT)
+				this.outStockSaleObj.bizDT = datenow.getFullYear() + '-' + (datenow.getMonth() + 1) + '-' + datenow.getDate()
 				adduser.id = this.$route.params.edit_out_id;
-				adduser.bizDT = this.bizDT;
-				adduser.customerId = this.customerId;
-				adduser.warehouseId = this.warehouseId;
-				adduser.bizUserId = this.bizUserId;
-				adduser.receivingType = this.receivingType;
-				adduser.billMemo = this.billMemo;
-				adduser.dealAddress = this.dealAddress;
-				adduser.sobillRef = this.sobillRef;
+				adduser.bizDT = this.outStockSaleObj.bizDT;
+				adduser.customerId = this.outStockSaleObj.customerId;
+				adduser.warehouseId = this.outStockSaleObj.warehouseId;
+				adduser.bizUserId = this.outStockSaleObj.bizUserId;
+				adduser.receivingType = this.outStockSaleObj.receivingType;
+				adduser.billMemo = this.outStockSaleObj.billMemo;
+				adduser.dealAddress = this.outStockSaleObj.dealAddress;
+				adduser.sobillRef = this.outStockSaleObj.sobillRef;
 				adduser.items = this.table.lists;
 				editWSBill({
 					jsonStr: adduser,
@@ -562,7 +502,7 @@
 						var temp = {}
 						temp.label = item.name
 						temp.value = item.id
-						this.customerslist.push(temp)
+						this.outStockSaleObj.customerslist.push(temp)
 					})
 				})
 			},
@@ -575,7 +515,7 @@
 						var temp = {}
 						temp.value = item.id
 						temp.label = item.name
-						this.orgslist.push(temp)
+						this.outStockSaleObj.orgslist.push(temp)
 					})
 				})
 			},
@@ -588,7 +528,7 @@
 						var temp = {}
 						temp.value = item.id
 						temp.label = item.nickname
-						this.alluserslist.push(temp)
+						this.outStockSaleObj.alluserslist.push(temp)
 					})
 				})
 			},
@@ -597,24 +537,25 @@
 				getAllStock({
           ticket: sessionStorage.getItem("ticket"),
         }).then(res => {
-					this.stock_list = res.data;
+					this.outStockSaleObj.stock_list = res.data;
 				})
 			},
+      /*获取当前编辑出库单的数据*/
 			getOutStockData() {
 				wsBillInfo({
 					id: this.$route.params.edit_out_id,
           ticket: sessionStorage.getItem("ticket"),
 				}).then(res => {
-					this.odd_number = res.data.ref
-					this.bizDT = res.data.bizDT
-					this.customerId = res.data.customerId
-					this.bizUserId = res.data.bizUserId
-					this.warehouseId = res.data.warehouseId
-					this.receivingType = res.data.receivingType
-					this.dealAddress = res.data.dealAddress
-					this.billMemo = res.data.memo
+					this.outStockSaleObj.odd_number = res.data.ref
+					this.outStockSaleObj.bizDT = res.data.bizDT
+					this.outStockSaleObj.customerId = res.data.customerId
+					this.outStockSaleObj.bizUserId = res.data.bizUserId
+					this.outStockSaleObj.warehouseId = res.data.warehouseId
+					this.outStockSaleObj.receivingType = res.data.receivingType
+					this.outStockSaleObj.dealAddress = res.data.dealAddress
+					this.outStockSaleObj.billMemo = res.data.memo
 					this.table.lists = res.data.items
-					this.totalPrice = parseFloat(res.data.totalMoney)
+					this.outStockSaleObj.totalPrice = parseFloat(res.data.totalMoney)
 				})
 			}
 		}
